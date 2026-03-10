@@ -181,11 +181,20 @@
       padding: 24px;
     }
 
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
     .menu {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      margin-bottom: 0;
     }
 
     .menu-btn {
@@ -197,6 +206,23 @@
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
       cursor: default;
+    }
+
+    .refresh-btn {
+      background: #ff7a00;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
+    }
+
+    .status-bar {
+      margin-bottom: 18px;
+      color: #6b7280;
+      font-size: 14px;
+      min-height: 20px;
+      font-weight: 600;
     }
 
     .cards {
@@ -241,6 +267,7 @@
       line-height: 1.25;
       color: #111827;
       margin-bottom: 14px;
+      word-break: break-word;
     }
 
     .customer-balance {
@@ -364,13 +391,18 @@
     </div>
 
     <div class="main">
-      <div class="menu">
-        <button class="menu-btn">Müşteriler</button>
-        <button class="menu-btn">Raporlar</button>
-        <button class="menu-btn">Kasa</button>
-        <button class="menu-btn">Ayarlar</button>
+      <div class="top-actions">
+        <div class="menu">
+          <button class="menu-btn">Müşteriler</button>
+          <button class="menu-btn">Raporlar</button>
+          <button class="menu-btn">Kasa</button>
+          <button class="menu-btn">Ayarlar</button>
+        </div>
+
+        <button class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
       </div>
 
+      <div id="statusBar" class="status-bar"></div>
       <div id="cards" class="cards"></div>
     </div>
   </div>
@@ -419,39 +451,79 @@
       }
     }
 
+    async function fetchCustomers(tenantId) {
+      const statusBar = document.getElementById("statusBar");
+      const cards = document.getElementById("cards");
+
+      statusBar.innerText = "Müşteriler yükleniyor...";
+      cards.innerHTML = "";
+
+      try {
+        const url = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenantId}&select=id,full_name,balance&order=created_at.desc`;
+
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          statusBar.innerText = "Müşteri bulunamadı.";
+          cards.innerHTML = `
+            <div class="empty">
+              Bu firmaya ait müşteri bulunamadı. Bir sonraki adımda yeni müşteri ekleme ekranını ekleyeceğiz.
+            </div>
+          `;
+          return;
+        }
+
+        statusBar.innerText = `${data.length} müşteri yüklendi.`;
+
+        cards.innerHTML = data.map(customer => `
+          <div class="customer-card">
+            <div class="card-top">
+              <div class="customer-name">${escapeHtml(customer.full_name || "")}</div>
+              <div class="customer-balance">Borç: ${formatMoney(customer.balance || 0)} ₺</div>
+            </div>
+            <div class="actions">
+              <button class="sale">Satış Yap</button>
+              <button class="pay">Tahsilat Yap</button>
+            </div>
+          </div>
+        `).join("");
+
+      } catch (error) {
+        statusBar.innerText = "Müşteriler yüklenirken hata oluştu.";
+        cards.innerHTML = `
+          <div class="empty">
+            Supabase bağlantısı var ama müşteri listesi okunamadı. Bir sonraki adımda bunu da güçlendireceğiz.
+          </div>
+        `;
+      }
+    }
+
     function openPanel(tenant) {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("panelScreen").classList.remove("hidden");
       document.getElementById("companyName").innerText = tenant.company_name || "-";
+      fetchCustomers(tenant.tenant_id);
+    }
 
-      const cards = document.getElementById("cards");
-      cards.innerHTML = `
-        <div class="customer-card">
-          <div class="card-top">
-            <div class="customer-name">Ahmet Market Cari</div>
-            <div class="customer-balance">Borç: 4.250 ₺</div>
-          </div>
-          <div class="actions">
-            <button class="sale">Satış Yap</button>
-            <button class="pay">Tahsilat Yap</button>
-          </div>
-        </div>
+    function refreshCustomers() {
+      const savedUser = localStorage.getItem("dml_user");
+      if (!savedUser) return;
 
-        <div class="customer-card">
-          <div class="card-top">
-            <div class="customer-name">Mehmet Büfe Cari</div>
-            <div class="customer-balance">Borç: 980 ₺</div>
-          </div>
-          <div class="actions">
-            <button class="sale">Satış Yap</button>
-            <button class="pay">Tahsilat Yap</button>
-          </div>
-        </div>
-
-        <div class="empty">
-          Giriş sistemi bağlandı. Bir sonraki adımda gerçek müşteri kayıtlarını Supabase'ten çekeceğiz.
-        </div>
-      `;
+      try {
+        const tenant = JSON.parse(savedUser);
+        fetchCustomers(tenant.tenant_id);
+      } catch (e) {
+        localStorage.removeItem("dml_user");
+      }
     }
 
     function logout() {
@@ -461,6 +533,24 @@
       document.getElementById("msg").innerText = "";
       document.getElementById("user").value = "";
       document.getElementById("pass").value = "";
+      document.getElementById("cards").innerHTML = "";
+      document.getElementById("statusBar").innerText = "";
+    }
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("tr-TR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     window.onload = function () {
