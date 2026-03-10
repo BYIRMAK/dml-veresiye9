@@ -1,322 +1,2348 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DML VERESİYE9</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DML VERESİYE9</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
 
-<style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5f7;
+      color: #1f2937;
+    }
 
-body{
-margin:0;
-font-family:Arial;
-background:#edf1f3;
-}
+    .hidden { display: none !important; }
 
-/* LOGO */
+    .app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
+    }
 
-.brand-logo{
-width:48px;
-height:48px;
-border-radius:10px;
-object-fit:contain;
-}
+    .brand-row, .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
 
-.header-logo{
-width:44px;
-height:44px;
-border-radius:10px;
-object-fit:contain;
-}
+    .brand-logo, .header-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px;
+      flex-shrink: 0;
+    }
 
-/* LOGIN */
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+    }
 
-.app{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:#eef3f2;
-}
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
 
-.login-card{
-width:400px;
-background:white;
-border-radius:20px;
-box-shadow:0 15px 40px rgba(0,0,0,0.15);
-overflow:hidden;
-}
+    .top, .header, .modal-head, .detail-head {
+      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
+      color: white;
+    }
 
-.top{
-background:#0f5f54;
-color:white;
-padding:30px;
-}
+    .top { padding: 30px 24px 24px 24px; }
 
-.brand-row{
-display:flex;
-align-items:center;
-gap:12px;
-}
+    .brand {
+      font-size: 31px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      letter-spacing: 0.3px;
+    }
 
-.brand{
-margin:0;
-font-size:28px;
-}
+    .sub {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
 
-.sub{
-margin-top:6px;
-font-size:14px;
-opacity:0.9;
-}
+    .content { padding: 24px; }
 
-.content{
-padding:25px;
-}
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
 
-label{
-font-weight:bold;
-display:block;
-margin-bottom:6px;
-}
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      font-family: inherit;
+    }
 
-input{
-width:100%;
-padding:12px;
-margin-bottom:14px;
-border-radius:10px;
-border:1px solid #ccc;
-}
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
 
-button{
-cursor:pointer;
-border:none;
-}
+    input:focus, select:focus, textarea:focus {
+      border-color: #0f5f54;
+      box-shadow: 0 0 0 3px rgba(15, 95, 84, 0.12);
+    }
 
-.login-btn{
-width:100%;
-background:#ff7a00;
-color:white;
-padding:14px;
-border-radius:12px;
-font-weight:bold;
-font-size:16px;
-}
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s ease;
+    }
 
-.panel{
-min-height:100vh;
-}
+    .login-btn,
+    .refresh-btn,
+    .report-btn,
+    .toggle-form-btn {
+      background: #ff7a00;
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
+    }
 
-/* HEADER */
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
 
-.header{
-background:#0f5f54;
-color:white;
-padding:18px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+    .save-btn,
+    .pay,
+    .close-btn {
+      background: #0f5f54;
+      color: white;
+      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+    }
 
-.header-left{
-display:flex;
-align-items:center;
-gap:12px;
-}
+    .sale,
+    .action-btn {
+      background: #ff7a00;
+      color: white;
+      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
+    }
 
-.header-title{
-font-size:26px;
-font-weight:bold;
-}
+    .secondary-btn,
+    .detail-btn,
+    .edit-btn {
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+    }
 
-.logout{
-background:white;
-color:#0f5f54;
-padding:8px 14px;
-border-radius:10px;
-font-weight:bold;
-}
+    .danger-btn,
+    .delete-btn {
+      background: #b91c1c;
+      color: white;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
+    }
 
-/* MAIN */
+    .whatsapp-btn {
+      background: #25D366;
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.22);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-.main{
-padding:25px;
-}
+    .logout {
+      background: white;
+      color: #0f5f54;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
+    }
 
-/* CUSTOMER GRID */
+    .login-btn:hover,
+    .refresh-btn:hover,
+    .save-btn:hover,
+    .sale:hover,
+    .pay:hover,
+    .logout:hover,
+    .action-btn:hover,
+    .close-btn:hover,
+    .detail-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover,
+    .edit-btn:hover,
+    .delete-btn:hover,
+    .menu-btn-link:hover,
+    .report-btn:hover,
+    .toggle-form-btn:hover,
+    .whatsapp-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.97;
+    }
 
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fill,240px);
-gap:20px;
-}
+    .msg {
+      margin-top: 16px;
+      font-size: 14px;
+      text-align: center;
+      min-height: 20px;
+    }
 
-.customer-card{
-background:white;
-border-radius:20px;
-padding:18px;
-border:1px solid #e5e7eb;
-box-shadow:0 8px 18px rgba(0,0,0,0.08);
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-}
+    .ok { color: #0f5f54; font-weight: 700; }
+    .err { color: #b91c1c; font-weight: 700; }
 
-.customer-name{
-font-size:20px;
-font-weight:bold;
-margin-bottom:10px;
-}
+    .info {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
 
-.customer-balance{
-background:#f4f6f7;
-padding:8px;
-border-radius:10px;
-font-weight:bold;
-margin-bottom:10px;
-}
+    .panel {
+      min-height: 100vh;
+      background: #edf1f3;
+    }
 
-.customer-mini{
-font-size:13px;
-color:#666;
-}
+    .header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
 
-.actions{
-display:flex;
-flex-direction:column;
-gap:8px;
-margin-top:14px;
-}
+    .header-title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
 
-.sale{
-background:#ff7a00;
-color:white;
-padding:10px;
-border-radius:10px;
-font-weight:bold;
-}
+    .header-right {
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
 
-.pay{
-background:#0f5f54;
-color:white;
-padding:10px;
-border-radius:10px;
-font-weight:bold;
-}
+    .main { padding: 24px; }
 
-.detail-btn{
-background:#e7f3f1;
-padding:8px;
-border-radius:10px;
-margin-top:10px;
-font-weight:bold;
-}
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
 
-/* WHATSAPP */
+    .menu {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
 
-.whatsapp-btn{
-background:#25D366;
-color:white;
-padding:8px 12px;
-border-radius:10px;
-font-weight:bold;
-}
+    .menu-btn,
+    .menu-btn-link {
+      background: white;
+      color: #0f5f54;
+      border: 1px solid #d8dde1;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
 
-</style>
+    .menu-btn-link.active {
+      background: #0f5f54;
+      color: white;
+      border-color: #0f5f54;
+    }
+
+    .right-tools {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .refresh-btn, .report-btn, .toggle-form-btn {
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .form-box,
+    .report-box,
+    .cash-box,
+    .settings-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .form-title,
+    .report-title,
+    .cash-title,
+    .settings-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f5f54;
+      margin-bottom: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .report-filter-grid,
+    .cash-filter-grid,
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .settings-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    .save-btn {
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      height: 48px;
+    }
+
+    .status-bar {
+      margin-bottom: 18px;
+      color: #6b7280;
+      font-size: 14px;
+      min-height: 20px;
+      font-weight: 600;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+      gap: 22px;
+      align-items: start;
+    }
+
+    .customer-card,
+    .summary-card,
+    .license-card {
+      position: relative;
+      overflow: hidden;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    .customer-card::before,
+    .summary-card::before,
+    .license-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #0f5f54 0%, #ff7a00 100%);
+    }
+
+    .customer-card {
+      padding: 20px;
+      width: 240px;
+      min-height: 285px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-top {
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .customer-name {
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #111827;
+      margin-bottom: 14px;
+      word-break: break-word;
+    }
+
+    .customer-balance {
+      font-size: 18px;
+      font-weight: 700;
+      color: #374151;
+      background: #f9fafb;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #eceff3;
+      display: inline-block;
+    }
+
+    .customer-mini {
+      margin-top: 10px;
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .detail-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .sale,
+    .pay {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+    }
+
+    .empty {
+      background: #ffffff;
+      width: 240px;
+      min-height: 240px;
+      border-radius: 20px;
+      padding: 20px;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      line-height: 1.6;
+      display: flex;
+      align-items: center;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card,
+    .license-card {
+      padding: 20px;
+      min-height: 130px;
+    }
+
+    .summary-label {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+
+    .summary-value {
+      color: #111827;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .license-badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .license-badge.demo {
+      background: #fff1e6;
+      color: #ff7a00;
+    }
+
+    .license-badge.paid {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .license-line {
+      margin-top: 12px;
+      font-size: 15px;
+      color: #374151;
+      font-weight: 700;
+    }
+
+    .settings-preview {
+      background: #f9fafb;
+      border: 1px solid #eceff3;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .settings-preview h3 {
+      margin: 0 0 12px 0;
+      color: #0f5f54;
+      font-size: 18px;
+    }
+
+    .settings-preview p {
+      margin: 0 0 10px 0;
+      color: #4b5563;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .settings-logo-preview {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+
+    .report-table-wrap {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .report-table th {
+      background: #0f5f54;
+      color: white;
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+
+    .report-table td {
+      padding: 14px 16px;
+      border-top: 1px solid #edf0f2;
+      font-size: 14px;
+      color: #374151;
+      vertical-align: top;
+    }
+
+    .report-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .report-pill.sale,
+    .history-type.sale {
+      background: #fff1e6;
+      color: #ff7a00;
+    }
+
+    .report-pill.payment,
+    .history-type.payment {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .report-pill.cash_in {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .report-pill.cash_out {
+      background: #fff1f2;
+      color: #b91c1c;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .modal-head {
+      padding: 18px 20px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .modal-body { padding: 20px; }
+
+    .modal-text {
+      margin: 0 0 14px 0;
+      color: #374151;
+      font-weight: 600;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn,
+    .close-btn {
+      flex: 1;
+      padding: 13px 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .detail-modal {
+      width: 100%;
+      max-width: 860px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .detail-head {
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .detail-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .detail-balance {
+      background: rgba(255,255,255,0.14);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .detail-body {
+      padding: 20px;
+      max-height: 75vh;
+      overflow-y: auto;
+      background: #f8fafb;
+    }
+
+    .detail-tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .detail-info-box {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      margin-bottom: 14px;
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .secondary-btn,
+    .danger-btn,
+    .edit-btn,
+    .delete-btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .history-type {
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      display: inline-block;
+    }
+
+    .history-amount {
+      font-weight: 800;
+      font-size: 16px;
+      color: #111827;
+    }
+
+    .history-desc {
+      color: #4b5563;
+      font-size: 14px;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .history-date {
+      color: #6b7280;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .detail-empty {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    @media (max-width: 700px) {
+      .header { align-items: flex-start; }
+      .header-title { font-size: 24px; }
+      .form-grid,
+      .report-filter-grid,
+      .cash-filter-grid,
+      .settings-grid,
+      .settings-grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 220px));
+        justify-content: center;
+      }
+
+      .customer-card,
+      .empty { width: 220px; }
+
+      .modal-actions { flex-direction: column; }
+      .detail-head { align-items: flex-start; }
+      .report-table-wrap { overflow-x: auto; }
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="loginScreen" class="app">
+  <div id="loginScreen" class="app">
+    <div class="login-card">
+      <div class="top">
+        <div class="brand-row">
+          <img src="logo.png" alt="DML Logo" class="brand-logo" onerror="this.style.display='none'">
+          <div>
+            <h1 class="brand">DML VERESİYE9</h1>
+            <p class="sub">Lisanslı veresiye takip sistemi</p>
+          </div>
+        </div>
+      </div>
 
-<div class="login-card">
+      <div class="content">
+        <label for="user">Kullanıcı Kodu</label>
+        <input id="user" type="text" placeholder="Örn: test" />
 
-<div class="top">
+        <label for="pass">Şifre</label>
+        <input id="pass" type="password" placeholder="Şifre" />
 
-<div class="brand-row">
+        <button class="login-btn" onclick="login()">Giriş Yap</button>
 
-<img class="brand-logo"
-src="https://drive.google.com/uc?export=view&id=1cTOtzqSu7j1rDx5r_K7zt4RTLRjpielL">
+        <div id="msg" class="msg"></div>
 
-<div>
+        <div class="info">
+          İletişim: 0 541 465 66 22
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h1 class="brand">DML VERESİYE9</h1>
-<p class="sub">Lisanslı veresiye takip sistemi</p>
+  <div id="panelScreen" class="panel hidden">
+    <div class="header">
+      <div class="header-left">
+        <img src="logo.png" alt="DML Logo" class="header-logo" onerror="this.style.display='none'">
+        <div class="header-title">DML VERESİYE9</div>
+      </div>
+      <div class="header-right">
+        Firma: <strong id="companyName">-</strong>
+      </div>
+      <button class="logout" onclick="logout()">Çıkış Yap</button>
+    </div>
 
-</div>
+    <div class="main">
+      <div class="top-actions">
+        <div class="menu">
+          <button id="menuCustomers" class="menu-btn-link active" onclick="showCustomersView()">Müşteriler</button>
+          <button id="menuReports" class="menu-btn-link" onclick="showReportsView()">Raporlar</button>
+          <button id="menuCash" class="menu-btn-link" onclick="showCashView()">Kasa</button>
+          <button id="menuSettings" class="menu-btn-link" onclick="showSettingsView()">Ayarlar</button>
+        </div>
 
-</div>
+        <div class="right-tools">
+          <button id="globalRefreshBtn" class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
+          <button id="toggleCustomerFormBtn" class="toggle-form-btn" onclick="toggleCustomerForm()">Müşteri Ekle</button>
+        </div>
+      </div>
 
-</div>
+      <div id="customersView">
+        <div id="customerFormBox" class="form-box hidden">
+          <div class="form-title">Yeni Müşteri Ekle</div>
+          <div class="form-grid">
+            <div>
+              <label for="newCustomerName">Adı Soyadı</label>
+              <input id="newCustomerName" type="text" placeholder="Örn: Ahmet Yılmaz" />
+            </div>
+            <div>
+              <label for="newCustomerPhone">İletişim</label>
+              <input id="newCustomerPhone" type="text" placeholder="Örn: 05xxxxxxxxx" />
+            </div>
+            <div>
+              <label for="newCustomerAddress">Adres</label>
+              <textarea id="newCustomerAddress" placeholder="Müşteri adresi"></textarea>
+            </div>
+            <div>
+              <button class="save-btn" onclick="addCustomer()">Kaydet</button>
+            </div>
+          </div>
+        </div>
 
-<div class="content">
+        <div id="statusBar" class="status-bar"></div>
+        <div id="cards" class="cards"></div>
+      </div>
 
-<label>Kullanıcı</label>
-<input id="user">
+      <div id="reportsView" class="hidden">
+        <div class="report-box">
+          <div class="report-title">Rapor Filtreleri</div>
+          <div class="report-filter-grid">
+            <div>
+              <label for="reportStartDate">Başlangıç Tarihi</label>
+              <input id="reportStartDate" type="date" />
+            </div>
+            <div>
+              <label for="reportEndDate">Bitiş Tarihi</label>
+              <input id="reportEndDate" type="date" />
+            </div>
+            <div>
+              <button class="report-btn" onclick="loadReports()">Raporu Getir</button>
+            </div>
+          </div>
+        </div>
 
-<label>Şifre</label>
-<input id="pass" type="password">
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Toplam Müşteri</div>
+            <div id="summaryCustomerCount" class="summary-value">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Alacak</div>
+            <div id="summaryTotalBalance" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Satış</div>
+            <div id="summaryTotalSales" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Tahsilat</div>
+            <div id="summaryTotalPayments" class="summary-value">0 ₺</div>
+          </div>
+        </div>
 
-<button class="login-btn" onclick="login()">Giriş Yap</button>
+        <div class="report-box">
+          <div class="detail-tools" style="margin-bottom:14px;">
+            <button class="secondary-btn" onclick="printReports()">Yazdır</button>
+            <button class="secondary-btn" onclick="downloadReportsPdf()">PDF Aktar</button>
+          </div>
 
-</div>
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>Müşteri</th>
+                  <th>İşlem Türü</th>
+                  <th>Tutar</th>
+                  <th>Açıklama</th>
+                </tr>
+              </thead>
+              <tbody id="reportTableBody">
+                <tr>
+                  <td colspan="5">Rapor henüz yüklenmedi.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-</div>
+      <div id="cashView" class="hidden">
+        <div class="cash-box">
+          <div class="cash-title">Kasa Hareketi Ekle</div>
+          <div class="cash-filter-grid">
+            <div>
+              <label for="cashType">İşlem Türü</label>
+              <select id="cashType">
+                <option value="cash_in">Kasa Giriş</option>
+                <option value="cash_out">Kasa Çıkış</option>
+              </select>
+            </div>
+            <div>
+              <label for="cashAmount">Tutar</label>
+              <input id="cashAmount" type="number" step="0.01" min="0" placeholder="Örn: 500" />
+            </div>
+            <div>
+              <label for="cashDescription">Açıklama</label>
+              <input id="cashDescription" type="text" placeholder="Örn: Gün sonu nakit" />
+            </div>
+            <div>
+              <button class="save-btn" onclick="addCashTransaction()">Kasaya Kaydet</button>
+            </div>
+          </div>
+        </div>
 
-</div>
+        <div class="cash-box">
+          <div class="cash-title">Kasa Filtreleri</div>
+          <div class="cash-filter-grid">
+            <div>
+              <label for="cashStartDate">Başlangıç Tarihi</label>
+              <input id="cashStartDate" type="date" />
+            </div>
+            <div>
+              <label for="cashEndDate">Bitiş Tarihi</label>
+              <input id="cashEndDate" type="date" />
+            </div>
+            <div>
+              <button class="report-btn" onclick="loadCash()">Kasayı Getir</button>
+            </div>
+          </div>
+        </div>
 
-<div id="panelScreen" class="panel hidden">
+        <div id="cashStatusBar" class="status-bar"></div>
 
-<div class="header">
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Toplam Kasa Giriş</div>
+            <div id="cashSummaryIn" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Kasa Çıkış</div>
+            <div id="cashSummaryOut" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Kasa Bakiye</div>
+            <div id="cashSummaryBalance" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Hareket</div>
+            <div id="cashSummaryCount" class="summary-value">0</div>
+          </div>
+        </div>
 
-<div class="header-left">
+        <div class="cash-box">
+          <div class="detail-tools" style="margin-bottom:14px;">
+            <button class="secondary-btn" onclick="printCash()">Yazdır</button>
+            <button class="secondary-btn" onclick="downloadCashPdf()">PDF Aktar</button>
+          </div>
 
-<img class="header-logo"
-src="https://drive.google.com/uc?export=view&id=1cTOtzqSu7j1rDx5r_K7zt4RTLRjpielL">
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>İşlem Türü</th>
+                  <th>Tutar</th>
+                  <th>Açıklama</th>
+                </tr>
+              </thead>
+              <tbody id="cashTableBody">
+                <tr>
+                  <td colspan="4">Kasa henüz yüklenmedi.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-<div class="header-title">DML VERESİYE9</div>
+      <div id="settingsView" class="hidden">
+        <div class="summary-grid">
+          <div class="license-card">
+            <div class="summary-label">Lisans Durumu</div>
+            <div id="licenseTypeText" class="summary-value" style="font-size:24px;">-</div>
+            <div id="licenseBadge" class="license-badge demo">Demo</div>
+            <div id="licenseDaysText" class="license-line">Kalan gün: -</div>
+          </div>
 
-</div>
+          <div class="license-card">
+            <div class="summary-label">Başlangıç Tarihi</div>
+            <div id="licenseStartText" class="summary-value" style="font-size:22px;">-</div>
+            <div class="license-line">Lisans başlangıç tarihi</div>
+          </div>
 
-<div>
-Firma: <b id="companyName"></b>
-</div>
+          <div class="license-card">
+            <div class="summary-label">Bitiş Tarihi</div>
+            <div id="licenseEndText" class="summary-value" style="font-size:22px;">-</div>
+            <div class="license-line">Lisans bitiş tarihi</div>
+          </div>
+        </div>
 
-<button class="logout" onclick="logout()">Çıkış</button>
+        <div class="settings-box">
+          <div class="settings-title">Firma Bilgileri</div>
+          <div class="settings-grid-2">
+            <div>
+              <label for="settingCompanyName">Firma Adı</label>
+              <input id="settingCompanyName" type="text" placeholder="Firma adı" />
 
-</div>
+              <label for="settingOwnerName">Yetkili Adı</label>
+              <input id="settingOwnerName" type="text" placeholder="Yetkili adı" />
 
-<div class="main">
+              <label for="settingPhone">Telefon</label>
+              <input id="settingPhone" type="text" placeholder="Telefon numarası" />
 
-<div id="cards" class="cards"></div>
+              <label for="settingAddress">Adres</label>
+              <textarea id="settingAddress" placeholder="Firma adresi"></textarea>
 
-</div>
+              <label for="settingLogoUrl">Logo Linki</label>
+              <input id="settingLogoUrl" type="text" placeholder="https://..." />
 
-</div>
+              <button class="save-btn" style="width:100%;" onclick="saveSettings()">Bilgileri Kaydet</button>
+            </div>
 
-<script>
+            <div>
+              <div class="settings-preview">
+                <img id="settingsLogoPreview" src="logo.png" alt="Logo Önizleme" class="settings-logo-preview" onerror="this.style.display='none'">
+                <h3>Önizleme</h3>
+                <p><strong>Firma:</strong> <span id="previewCompanyName">-</span></p>
+                <p><strong>Yetkili:</strong> <span id="previewOwnerName">-</span></p>
+                <p><strong>Telefon:</strong> <span id="previewPhone">-</span></p>
+                <p><strong>Adres:</strong> <span id="previewAddress">-</span></p>
+                <p><strong>İletişim Hattı:</strong> 0 541 465 66 22</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-const LOGO="https://drive.google.com/uc?export=view&id=1cTOtzqSu7j1rDx5r_K7zt4RTLRjpielL";
+        <div id="settingsStatusBar" class="status-bar"></div>
+      </div>
 
-function sendCustomerWhatsApp(){
+    </div>
+  </div>
 
-const phone="90"+activeDetail.phone.replace(/\D/g,"").slice(-10)
+  <div id="transactionModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div id="modalTitle" class="modal-head">İşlem</div>
+      <div class="modal-body">
+        <p class="modal-text">
+          Müşteri: <strong id="modalCustomerName">-</strong>
+        </p>
 
-const company=document.getElementById("companyName").innerText
+        <label for="modalAmount">Tutar</label>
+        <input id="modalAmount" type="number" step="0.01" min="0" placeholder="Örn: 1500" />
 
-const text=
+        <label for="modalDescription">Açıklama</label>
+        <input id="modalDescription" type="text" placeholder="Örn: Veresiye satış" />
+
+        <div class="modal-actions">
+          <button id="modalSaveBtn" class="action-btn" onclick="saveTransaction()">Kaydet</button>
+          <button class="close-btn" onclick="closeTransactionModal()">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editTransactionModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">İşlem Düzenle</div>
+      <div class="modal-body">
+        <p class="modal-text">
+          Müşteri: <strong id="editCustomerName">-</strong>
+        </p>
+
+        <label for="editTransactionAmount">Tutar</label>
+        <input id="editTransactionAmount" type="number" step="0.01" min="0" placeholder="Örn: 1500" />
+
+        <label for="editTransactionDescription">Açıklama</label>
+        <input id="editTransactionDescription" type="text" placeholder="Açıklama" />
+
+        <div class="modal-actions">
+          <button class="action-btn" onclick="saveEditedTransaction()">Düzenlemeyi Kaydet</button>
+          <button class="close-btn" onclick="closeEditTransactionModal()">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="detailModalBackdrop" class="modal-backdrop hidden">
+    <div class="detail-modal">
+      <div class="detail-head">
+        <div class="detail-title" id="detailCustomerName">Cari Detay</div>
+        <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="logout" onclick="printCustomerDetail()">Yazdır</button>
+          <button class="whatsapp-btn logout" onclick="sendCustomerWhatsApp()">
+            <span style="font-size:16px;">💬</span>
+            <span>WhatsApp</span>
+          </button>
+          <button class="logout" onclick="closeDetailModal()">Kapat</button>
+        </div>
+      </div>
+      <div class="detail-body">
+        <div class="detail-info-box">
+          <div><strong>İletişim:</strong> <span id="detailCustomerPhone">-</span></div>
+          <div style="margin-top:6px;"><strong>Adres:</strong> <span id="detailCustomerAddress">-</span></div>
+        </div>
+
+        <div class="detail-tools">
+          <button class="secondary-btn" onclick="downloadDetailPdf()">PDF Aktar</button>
+          <button class="danger-btn" onclick="deleteCustomer()">Müşteriyi Sil</button>
+        </div>
+        <div id="detailHistoryList" class="history-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
+
+    let activeTransaction = { customerId: null, customerName: "", tenantId: null, type: null };
+    let activeDetail = { customerId: null, customerName: "", balance: 0, phone: "", address: "" };
+    let editingTransaction = { id: null, customerId: null, customerName: "", type: null, oldAmount: 0 };
+    let reportsCache = { customers: [], transactions: [], customerMap: {} };
+    let cashCache = [];
+
+    function getHeaders(extra = {}) {
+      return {
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        "Content-Type": "application/json",
+        ...extra
+      };
+    }
+
+    function getSavedTenant() {
+      const savedUser = localStorage.getItem("dml_user");
+      if (!savedUser) return null;
+      try {
+        return JSON.parse(savedUser);
+      } catch {
+        localStorage.removeItem("dml_user");
+        return null;
+      }
+    }
+
+    function getCurrentCompanyName() {
+      const settingsInput = document.getElementById("settingCompanyName");
+      const headerName = document.getElementById("companyName");
+
+      const settingsValue = settingsInput ? settingsInput.value.trim() : "";
+      const headerValue = headerName ? headerName.innerText.trim() : "";
+
+      return settingsValue || headerValue || "Firma";
+    }
+
+    async function login() {
+      const user = document.getElementById("user").value.trim();
+      const pass = document.getElementById("pass").value.trim();
+      const msg = document.getElementById("msg");
+
+      msg.className = "msg";
+      msg.innerText = "Giriş kontrol ediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/dml_login`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ p_user_code: user, p_password: pass })
+        });
+
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const tenant = data[0];
+          localStorage.setItem("dml_user", JSON.stringify(tenant));
+          msg.className = "msg ok";
+          msg.innerText = "Giriş başarılı";
+          openPanel(tenant);
+        } else {
+          msg.className = "msg err";
+          msg.innerText = "Hatalı kullanıcı kodu veya şifre";
+        }
+      } catch (error) {
+        msg.className = "msg err";
+        msg.innerText = "Bağlantı hatası oluştu";
+      }
+    }
+
+    function showCustomersView() {
+      hideAllViews();
+      document.getElementById("customersView").classList.remove("hidden");
+      setActiveMenu("menuCustomers");
+      document.getElementById("globalRefreshBtn").classList.remove("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.remove("hidden");
+    }
+
+    function showReportsView() {
+      hideAllViews();
+      document.getElementById("reportsView").classList.remove("hidden");
+      setActiveMenu("menuReports");
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
+      loadReports();
+    }
+
+    function showCashView() {
+      hideAllViews();
+      document.getElementById("cashView").classList.remove("hidden");
+      setActiveMenu("menuCash");
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
+      loadCash();
+    }
+
+    function showSettingsView() {
+      hideAllViews();
+      document.getElementById("settingsView").classList.remove("hidden");
+      setActiveMenu("menuSettings");
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
+      loadSettings();
+    }
+
+    function hideAllViews() {
+      document.getElementById("customersView").classList.add("hidden");
+      document.getElementById("reportsView").classList.add("hidden");
+      document.getElementById("cashView").classList.add("hidden");
+      document.getElementById("settingsView").classList.add("hidden");
+    }
+
+    function setActiveMenu(id) {
+      ["menuCustomers","menuReports","menuCash","menuSettings"].forEach(menuId => {
+        document.getElementById(menuId).classList.remove("active");
+      });
+      document.getElementById(id).classList.add("active");
+    }
+
+    function toggleCustomerForm() {
+      const box = document.getElementById("customerFormBox");
+      box.classList.toggle("hidden");
+    }
+
+    async function fetchCustomers(tenantId) {
+      const statusBar = document.getElementById("statusBar");
+      const cards = document.getElementById("cards");
+      statusBar.innerText = "Müşteriler yükleniyor...";
+      cards.innerHTML = "";
+
+      try {
+        const url = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenantId}&select=id,full_name,balance,phone,address&order=created_at.desc`;
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          statusBar.innerText = "Müşteri bulunamadı.";
+          cards.innerHTML = `<div class="empty">Bu firmaya ait müşteri bulunamadı. Yukarıdaki Müşteri Ekle butonundan yeni kayıt açabilirsin.</div>`;
+          return;
+        }
+
+        statusBar.innerText = `${data.length} müşteri yüklendi.`;
+
+        cards.innerHTML = data.map(customer => `
+          <div class="customer-card">
+            <div class="card-top" onclick="openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)}, '${escapeJs(customer.phone || "")}', '${escapeJs(customer.address || "")}')">
+              <div class="customer-name">${escapeHtml(customer.full_name || "")}</div>
+              <div class="customer-balance">Borç: ${formatMoney(customer.balance || 0)} ₺</div>
+              <div class="customer-mini">${escapeHtml(customer.phone || "Telefon yok")}</div>
+              <button class="detail-btn" onclick="event.stopPropagation(); openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)}, '${escapeJs(customer.phone || "")}', '${escapeJs(customer.address || "")}')">Cari Detay</button>
+            </div>
+            <div class="actions">
+              <button class="sale" onclick="openTransactionModal('sale', '${customer.id}', '${escapeJs(customer.full_name || "")}')">Satış Yap</button>
+              <button class="pay" onclick="openTransactionModal('payment', '${customer.id}', '${escapeJs(customer.full_name || "")}')">Tahsilat Yap</button>
+            </div>
+          </div>
+        `).join("");
+      } catch {
+        statusBar.innerText = "Müşteriler yüklenirken hata oluştu.";
+        cards.innerHTML = `<div class="empty">Supabase bağlantısı var ama müşteri listesi okunamadı.</div>`;
+      }
+    }
+
+    async function addCustomer() {
+      const name = document.getElementById("newCustomerName").value.trim();
+      const phone = document.getElementById("newCustomerPhone").value.trim();
+      const address = document.getElementById("newCustomerAddress").value.trim();
+      const statusBar = document.getElementById("statusBar");
+      const tenant = getSavedTenant();
+
+      if (!tenant) {
+        statusBar.innerText = "Önce giriş yapılmalı.";
+        return;
+      }
+
+      if (!name) {
+        statusBar.innerText = "Müşteri adı boş bırakılamaz.";
+        return;
+      }
+
+      statusBar.innerText = "Müşteri kaydediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
+          method: "POST",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            tenant_id: tenant.tenant_id,
+            full_name: name,
+            phone: phone || null,
+            address: address || null,
+            balance: 0
+          })
+        });
+
+        if (!res.ok) {
+          statusBar.innerText = "Müşteri kaydedilemedi.";
+          return;
+        }
+
+        document.getElementById("newCustomerName").value = "";
+        document.getElementById("newCustomerPhone").value = "";
+        document.getElementById("newCustomerAddress").value = "";
+        document.getElementById("customerFormBox").classList.add("hidden");
+
+        statusBar.innerText = "Müşteri başarıyla eklendi.";
+        fetchCustomers(tenant.tenant_id);
+      } catch {
+        statusBar.innerText = "Müşteri eklenirken bağlantı hatası oluştu.";
+      }
+    }
+
+    function openTransactionModal(type, customerId, customerName) {
+      const tenant = getSavedTenant();
+      if (!tenant) return;
+
+      activeTransaction = { customerId, customerName, tenantId: tenant.tenant_id, type };
+      document.getElementById("modalCustomerName").innerText = customerName;
+      document.getElementById("modalAmount").value = "";
+      document.getElementById("modalDescription").value = "";
+
+      if (type === "sale") {
+        document.getElementById("modalTitle").innerText = "Satış Ekle";
+        document.getElementById("modalSaveBtn").innerText = "Satışı Kaydet";
+      } else {
+        document.getElementById("modalTitle").innerText = "Tahsilat Ekle";
+        document.getElementById("modalSaveBtn").innerText = "Tahsilatı Kaydet";
+      }
+
+      document.getElementById("transactionModal").classList.remove("hidden");
+    }
+
+    function closeTransactionModal() {
+      document.getElementById("transactionModal").classList.add("hidden");
+      activeTransaction = { customerId: null, customerName: "", tenantId: null, type: null };
+    }
+
+    async function saveTransaction() {
+      const amount = Number(document.getElementById("modalAmount").value);
+      const description = document.getElementById("modalDescription").value.trim();
+      const statusBar = document.getElementById("statusBar");
+
+      if (!activeTransaction.customerId || !activeTransaction.tenantId || !activeTransaction.type) {
+        statusBar.innerText = "İşlem bilgisi eksik.";
+        return;
+      }
+
+      if (!amount || amount <= 0) {
+        statusBar.innerText = "Geçerli bir tutar gir.";
+        return;
+      }
+
+      const tenantId = activeTransaction.tenantId;
+      const customerId = activeTransaction.customerId;
+      const txType = activeTransaction.type === "sale" ? "sale" : "payment";
+      const txText = activeTransaction.type === "sale" ? "Satış" : "Tahsilat";
+
+      statusBar.innerText = "İşlem kaydediliyor...";
+
+      try {
+        const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions`, {
+          method: "POST",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            tenant_id: tenantId,
+            customer_id: customerId,
+            transaction_type: txType,
+            amount: amount,
+            description: description || (txType === "sale" ? "Satış işlemi" : "Tahsilat işlemi")
+          })
+        });
+
+        if (!insertRes.ok) {
+          statusBar.innerText = "İşlem kaydedilemedi.";
+          return;
+        }
+
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}&select=id,balance`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const customerData = await balanceRes.json();
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
+        const newBalance = activeTransaction.type === "sale" ? currentBalance + amount : currentBalance - amount;
+
+        const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
+        });
+
+        if (!updateRes.ok) {
+          statusBar.innerText = "Borç güncellenemedi.";
+          return;
+        }
+
+        statusBar.innerText = `${txText} başarıyla kaydedildi.`;
+        closeTransactionModal();
+        await fetchCustomers(tenantId);
+
+        if (!document.getElementById("detailModalBackdrop").classList.contains("hidden") && activeDetail.customerId === customerId) {
+          await openDetailModal(customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
+        }
+      } catch {
+        statusBar.innerText = "İşlem sırasında bağlantı hatası oluştu.";
+      }
+    }
+
+    async function openDetailModal(customerId, customerName, balance, phone = "", address = "") {
+      activeDetail = { customerId, customerName, balance, phone, address };
+      document.getElementById("detailCustomerName").innerText = customerName;
+      document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
+      document.getElementById("detailCustomerPhone").innerText = phone || "-";
+      document.getElementById("detailCustomerAddress").innerText = address || "-";
+      document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yükleniyor...</div>`;
+      document.getElementById("detailModalBackdrop").classList.remove("hidden");
+
+      try {
+        const url = `${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${customerId}&select=id,transaction_type,amount,description,created_at&order=created_at.desc`;
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">Bu müşteriye ait işlem geçmişi bulunamadı.</div>`;
+          return;
+        }
+
+        document.getElementById("detailHistoryList").innerHTML = data.map(item => `
+          <div class="history-item">
+            <div class="history-row">
+              <span class="history-type ${item.transaction_type === 'sale' ? 'sale' : 'payment'}">
+                ${item.transaction_type === 'sale' ? 'Satış' : 'Tahsilat'}
+              </span>
+              <span class="history-amount">${formatMoney(item.amount || 0)} ₺</span>
+            </div>
+            <div class="history-desc">${escapeHtml(item.description || 'Açıklama yok')}</div>
+            <div class="history-date">${formatDate(item.created_at)}</div>
+            <div class="history-actions">
+              <button class="edit-btn" onclick="openEditTransactionModal('${item.id}', '${item.transaction_type}', ${Number(item.amount || 0)}, '${escapeJs(item.description || "")}')">Düzenle</button>
+              <button class="delete-btn" onclick="deleteTransaction('${item.id}', '${item.transaction_type}', ${Number(item.amount || 0)})">İşlemi Sil</button>
+            </div>
+          </div>
+        `).join("");
+      } catch {
+        document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yüklenemedi.</div>`;
+      }
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detailModalBackdrop").classList.add("hidden");
+      activeDetail = { customerId: null, customerName: "", balance: 0, phone: "", address: "" };
+    }
+
+    function normalizePhoneForWhatsApp(phone) {
+      let digits = String(phone || "").replace(/\D/g, "");
+      if (!digits) return "";
+
+      if (digits.startsWith("90")) return digits;
+      if (digits.startsWith("0")) return "90" + digits.substring(1);
+      if (digits.length === 10) return "90" + digits;
+      return digits;
+    }
+
+    function sendCustomerWhatsApp() {
+      const normalized = normalizePhoneForWhatsApp(activeDetail.phone);
+
+      if (!normalized) {
+        alert("Bu müşteride kayıtlı telefon numarası yok.");
+        return;
+      }
+
+      const companyName = getCurrentCompanyName();
+
+      const text =
 `Merhaba ${activeDetail.customerName},
 ${document.getElementById("detailCustomerBalance").innerText}
 
-${company} üzerinden borç bilgilendirmesi yapılmıştır.`
+${companyName} üzerinden borç bilgilendirmesi yapılmıştır.`;
 
-window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`)
+      const waUrl = `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, "_blank");
+    }
 
-}
+    function printCustomerDetail() {
+      const name = document.getElementById("detailCustomerName").innerText;
+      const balance = document.getElementById("detailCustomerBalance").innerText;
+      const phone = document.getElementById("detailCustomerPhone").innerText;
+      const address = document.getElementById("detailCustomerAddress").innerText;
+      const history = document.getElementById("detailHistoryList").innerHTML;
 
-</script>
+      const printWindow = window.open("", "", "width=900,height=700");
 
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Cari Detay</title>
+          <style>
+            body{
+              font-family: Arial, sans-serif;
+              padding:30px;
+              color:#111827;
+            }
+            h1{
+              color:#0f5f54;
+              margin-bottom:10px;
+            }
+            .balance{
+              font-size:20px;
+              font-weight:700;
+              margin-bottom:16px;
+            }
+            .info{
+              margin-bottom:20px;
+              line-height:1.6;
+              color:#4b5563;
+            }
+            .history-item{
+              border:1px solid #ddd;
+              border-radius:10px;
+              padding:12px;
+              margin-bottom:12px;
+            }
+            .history-row{
+              display:flex;
+              justify-content:space-between;
+              gap:10px;
+              margin-bottom:8px;
+              font-weight:700;
+            }
+            .history-desc{
+              margin-bottom:6px;
+            }
+            .history-date{
+              color:#666;
+              font-size:13px;
+            }
+            .history-actions{
+              display:none !important;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${name}</h1>
+          <div class="balance">${balance}</div>
+          <div class="info">
+            <div><strong>İletişim:</strong> ${phone}</div>
+            <div><strong>Adres:</strong> ${address}</div>
+          </div>
+          ${history}
+        </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+
+    async function downloadDetailPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const detailName = document.getElementById("detailCustomerName").innerText || "Cari Detay";
+      const detailBalance = document.getElementById("detailCustomerBalance").innerText || "";
+      const detailPhone = document.getElementById("detailCustomerPhone").innerText || "-";
+      const detailAddress = document.getElementById("detailCustomerAddress").innerText || "-";
+      const items = Array.from(document.querySelectorAll("#detailHistoryList .history-item"));
+
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9", 14, y); y += 10;
+      doc.setFontSize(14);
+      doc.text(detailName, 14, y); y += 8;
+      doc.text(detailBalance, 14, y); y += 8;
+      doc.setFontSize(10);
+      doc.text(`Iletisim: ${detailPhone}`.slice(0, 90), 14, y); y += 6;
+      doc.text(`Adres: ${detailAddress}`.slice(0, 90), 14, y); y += 10;
+
+      items.forEach((item, index) => {
+        const type = item.querySelector(".history-type")?.innerText || "";
+        const amount = item.querySelector(".history-amount")?.innerText || "";
+        const desc = item.querySelector(".history-desc")?.innerText || "";
+        const date = item.querySelector(".history-date")?.innerText || "";
+
+        if (y > 260) { doc.addPage(); y = 20; }
+
+        doc.setFontSize(12);
+        doc.text(`${index + 1}. ${type} - ${amount}`, 14, y); y += 7;
+        doc.setFontSize(10);
+        doc.text(`Aciklama: ${desc}`.slice(0, 90), 14, y); y += 6;
+        doc.text(`Tarih: ${date}`.slice(0, 90), 14, y); y += 10;
+      });
+
+      doc.save(`${detailName.replaceAll(" ", "_")}_cari_detay.pdf`);
+    }
+
+    async function deleteCustomer() {
+      const statusBar = document.getElementById("statusBar");
+
+      if (!activeDetail.customerId) {
+        statusBar.innerText = "Silinecek müşteri seçilemedi.";
+        return;
+      }
+
+      if (!confirm(`${activeDetail.customerName} müşterisini silmek istediğine emin misin?`)) return;
+
+      statusBar.innerText = "Müşteri siliniyor...";
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${activeDetail.customerId}`, {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+
+        if (!res.ok) {
+          statusBar.innerText = "Müşteri silinemedi.";
+          return;
+        }
+
+        statusBar.innerText = "Müşteri başarıyla silindi.";
+        closeDetailModal();
+
+        const tenant = getSavedTenant();
+        if (tenant) fetchCustomers(tenant.tenant_id);
+      } catch {
+        statusBar.innerText = "Müşteri silinirken bağlantı hatası oluştu.";
+      }
+    }
+
+    function openEditTransactionModal(id, type, amount, description) {
+      editingTransaction = {
+        id,
+        customerId: activeDetail.customerId,
+        customerName: activeDetail.customerName,
+        type,
+        oldAmount: Number(amount || 0)
+      };
+
+      document.getElementById("editCustomerName").innerText = activeDetail.customerName;
+      document.getElementById("editTransactionAmount").value = Number(amount || 0);
+      document.getElementById("editTransactionDescription").value = description || "";
+      document.getElementById("editTransactionModal").classList.remove("hidden");
+    }
+
+    function closeEditTransactionModal() {
+      document.getElementById("editTransactionModal").classList.add("hidden");
+      editingTransaction = { id: null, customerId: null, customerName: "", type: null, oldAmount: 0 };
+    }
+
+    async function saveEditedTransaction() {
+      const statusBar = document.getElementById("statusBar");
+      const newAmount = Number(document.getElementById("editTransactionAmount").value);
+      const newDescription = document.getElementById("editTransactionDescription").value.trim();
+
+      if (!editingTransaction.id || !editingTransaction.customerId || !editingTransaction.type) {
+        statusBar.innerText = "Düzenlenecek işlem bulunamadı.";
+        return;
+      }
+
+      if (!newAmount || newAmount <= 0) {
+        statusBar.innerText = "Geçerli bir tutar gir.";
+        return;
+      }
+
+      statusBar.innerText = "İşlem düzenleniyor...";
+
+      try {
+        const updateTx = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${editingTransaction.id}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            amount: newAmount,
+            description: newDescription || "Düzenlenmiş işlem"
+          })
+        });
+
+        if (!updateTx.ok) {
+          statusBar.innerText = "İşlem düzenlenemedi.";
+          return;
+        }
+
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}&select=id,balance`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const customerData = await balanceRes.json();
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
+
+        let newBalance = currentBalance;
+        if (editingTransaction.type === "sale") {
+          newBalance = currentBalance - editingTransaction.oldAmount + newAmount;
+        } else {
+          newBalance = currentBalance + editingTransaction.oldAmount - newAmount;
+        }
+
+        const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
+        });
+
+        if (!updateCustomer.ok) {
+          statusBar.innerText = "Borç güncellenemedi.";
+          return;
+        }
+
+        statusBar.innerText = "İşlem başarıyla düzenlendi.";
+        closeEditTransactionModal();
+
+        const tenant = getSavedTenant();
+        if (tenant) await fetchCustomers(tenant.tenant_id);
+
+        await openDetailModal(editingTransaction.customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
+      } catch {
+        statusBar.innerText = "İşlem düzenlenirken bağlantı hatası oluştu.";
+      }
+    }
+
+    async function deleteTransaction(transactionId, type, amount) {
+      const statusBar = document.getElementById("statusBar");
+      if (!confirm("Bu işlemi silmek istediğine emin misin?")) return;
+
+      statusBar.innerText = "İşlem siliniyor...";
+
+      try {
+        const deleteRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${transactionId}`, {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+
+        if (!deleteRes.ok) {
+          statusBar.innerText = "İşlem silinemedi.";
+          return;
+        }
+
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}&select=id,balance`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const customerData = await balanceRes.json();
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
+        const amountNum = Number(amount || 0);
+        const newBalance = type === "sale" ? currentBalance - amountNum : currentBalance + amountNum;
+
+        const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
+        });
+
+        if (!updateCustomer.ok) {
+          statusBar.innerText = "Borç güncellenemedi.";
+          return;
+        }
+
+        statusBar.innerText = "İşlem başarıyla silindi.";
+
+        const tenant = getSavedTenant();
+        if (tenant) await fetchCustomers(tenant.tenant_id);
+
+        await openDetailModal(activeDetail.customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
+      } catch {
+        statusBar.innerText = "İşlem silinirken bağlantı hatası oluştu.";
+      }
+    }
+
+    async function loadReports() {
+      const tenant = getSavedTenant();
+      if (!tenant) return;
+
+      const startDate = document.getElementById("reportStartDate").value;
+      const endDate = document.getElementById("reportEndDate").value;
+      const reportBody = document.getElementById("reportTableBody");
+
+      reportBody.innerHTML = `<tr><td colspan="5">Rapor yükleniyor...</td></tr>`;
+
+      try {
+        const customerUrl = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenant.tenant_id}&select=id,full_name,balance&order=full_name.asc`;
+        const customersRes = await fetch(customerUrl, { method: "GET", headers: getHeaders() });
+        const customers = await customersRes.json();
+        const customerMap = {};
+
+        if (Array.isArray(customers)) {
+          customers.forEach(c => { customerMap[c.id] = c.full_name; });
+        }
+
+        let txUrl = `${SUPABASE_URL}/rest/v1/customer_transactions?tenant_id=eq.${tenant.tenant_id}&select=id,customer_id,transaction_type,amount,description,created_at&order=created_at.desc`;
+        if (startDate) txUrl += `&created_at=gte.${startDate}T00:00:00`;
+        if (endDate) txUrl += `&created_at=lte.${endDate}T23:59:59`;
+
+        const txRes = await fetch(txUrl, { method: "GET", headers: getHeaders() });
+        const transactions = await txRes.json();
+
+        reportsCache = {
+          customers: Array.isArray(customers) ? customers : [],
+          transactions: Array.isArray(transactions) ? transactions : [],
+          customerMap
+        };
+
+        const totalCustomerCount = reportsCache.customers.length;
+        const totalBalance = reportsCache.customers.reduce((sum, item) => sum + Number(item.balance || 0), 0);
+        const totalSales = reportsCache.transactions.filter(item => item.transaction_type === "sale").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const totalPayments = reportsCache.transactions.filter(item => item.transaction_type === "payment").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+        document.getElementById("summaryCustomerCount").innerText = totalCustomerCount;
+        document.getElementById("summaryTotalBalance").innerText = `${formatMoney(totalBalance)} ₺`;
+        document.getElementById("summaryTotalSales").innerText = `${formatMoney(totalSales)} ₺`;
+        document.getElementById("summaryTotalPayments").innerText = `${formatMoney(totalPayments)} ₺`;
+
+        if (!reportsCache.transactions.length) {
+          reportBody.innerHTML = `<tr><td colspan="5">Bu aralıkta işlem bulunamadı.</td></tr>`;
+          return;
+        }
+
+        reportBody.innerHTML = reportsCache.transactions.map(item => `
+          <tr>
+            <td>${formatDate(item.created_at)}</td>
+            <td>${escapeHtml(customerMap[item.customer_id] || "Bilinmeyen Müşteri")}</td>
+            <td><span class="report-pill ${item.transaction_type === "sale" ? "sale" : "payment"}">${item.transaction_type === "sale" ? "Satış" : "Tahsilat"}</span></td>
+            <td>${formatMoney(item.amount || 0)} ₺</td>
+            <td>${escapeHtml(item.description || "-")}</td>
+          </tr>
+        `).join("");
+      } catch {
+        reportBody.innerHTML = `<tr><td colspan="5">Rapor yüklenirken hata oluştu.</td></tr>`;
+      }
+    }
+
+    function printReports() {
+      window.print();
+    }
+
+    async function downloadReportsPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9 RAPORLAR", 14, y); y += 10;
+      doc.setFontSize(11);
+      doc.text(`Toplam Musteri: ${document.getElementById("summaryCustomerCount").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Alacak: ${document.getElementById("summaryTotalBalance").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Satis: ${document.getElementById("summaryTotalSales").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Tahsilat: ${document.getElementById("summaryTotalPayments").innerText}`, 14, y); y += 12;
+
+      if (!reportsCache.transactions.length) {
+        doc.text("Islem bulunamadi.", 14, y);
+        doc.save("DML_VERESIYE9_Raporlar.pdf");
+        return;
+      }
+
+      reportsCache.transactions.forEach((item, index) => {
+        const line1 = `${index + 1}. ${item.transaction_type === "sale" ? "Satis" : "Tahsilat"} - ${formatMoney(item.amount || 0)} TL`;
+        const line2 = `Musteri: ${reportsCache.customerMap[item.customer_id] || "Bilinmeyen Musteri"}`;
+        const line3 = `Aciklama: ${(item.description || "-").slice(0, 70)}`;
+        const line4 = `Tarih: ${formatDate(item.created_at)}`;
+
+        if (y > 255) { doc.addPage(); y = 20; }
+
+        doc.setFontSize(11);
+        doc.text(line1, 14, y); y += 6;
+        doc.text(line2, 14, y); y += 6;
+        doc.text(line3, 14, y); y += 6;
+        doc.text(line4, 14, y); y += 10;
+      });
+
+      doc.save("DML_VERESIYE9_Raporlar.pdf");
+    }
+
+    async function addCashTransaction() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("cashStatusBar");
+
+      if (!tenant) {
+        statusBar.innerText = "Önce giriş yapılmalı.";
+        return;
+      }
+
+      const type = document.getElementById("cashType").value;
+      const amount = Number(document.getElementById("cashAmount").value);
+      const description = document.getElementById("cashDescription").value.trim();
+
+      if (!amount || amount <= 0) {
+        statusBar.innerText = "Geçerli bir kasa tutarı gir.";
+        return;
+      }
+
+      statusBar.innerText = "Kasa hareketi kaydediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/cash_transactions`, {
+          method: "POST",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            tenant_id: tenant.tenant_id,
+            transaction_type: type,
+            amount: amount,
+            description: description || (type === "cash_in" ? "Kasa giriş işlemi" : "Kasa çıkış işlemi")
+          })
+        });
+
+        if (!res.ok) {
+          statusBar.innerText = "Kasa hareketi kaydedilemedi.";
+          return;
+        }
+
+        document.getElementById("cashAmount").value = "";
+        document.getElementById("cashDescription").value = "";
+        document.getElementById("cashType").value = "cash_in";
+
+        statusBar.innerText = "Kasa hareketi başarıyla kaydedildi.";
+        loadCash();
+      } catch {
+        statusBar.innerText = "Kasa kaydında bağlantı hatası oluştu.";
+      }
+    }
+
+    async function loadCash() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("cashStatusBar");
+      const tbody = document.getElementById("cashTableBody");
+
+      if (!tenant) return;
+
+      const startDate = document.getElementById("cashStartDate").value;
+      const endDate = document.getElementById("cashEndDate").value;
+
+      statusBar.innerText = "Kasa hareketleri yükleniyor...";
+      tbody.innerHTML = `<tr><td colspan="4">Kasa yükleniyor...</td></tr>`;
+
+      try {
+        let url = `${SUPABASE_URL}/rest/v1/cash_transactions?tenant_id=eq.${tenant.tenant_id}&select=id,transaction_type,amount,description,created_at&order=created_at.desc`;
+        if (startDate) url += `&created_at=gte.${startDate}T00:00:00`;
+        if (endDate) url += `&created_at=lte.${endDate}T23:59:59`;
+
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
+        const data = await res.json();
+        cashCache = Array.isArray(data) ? data : [];
+
+        const totalIn = cashCache.filter(i => i.transaction_type === "cash_in").reduce((sum, i) => sum + Number(i.amount || 0), 0);
+        const totalOut = cashCache.filter(i => i.transaction_type === "cash_out").reduce((sum, i) => sum + Number(i.amount || 0), 0);
+        const balance = totalIn - totalOut;
+
+        document.getElementById("cashSummaryIn").innerText = `${formatMoney(totalIn)} ₺`;
+        document.getElementById("cashSummaryOut").innerText = `${formatMoney(totalOut)} ₺`;
+        document.getElementById("cashSummaryBalance").innerText = `${formatMoney(balance)} ₺`;
+        document.getElementById("cashSummaryCount").innerText = cashCache.length;
+
+        if (!cashCache.length) {
+          statusBar.innerText = "Kasa hareketi bulunamadı.";
+          tbody.innerHTML = `<tr><td colspan="4">Bu aralıkta kasa hareketi bulunamadı.</td></tr>`;
+          return;
+        }
+
+        statusBar.innerText = `${cashCache.length} kasa hareketi yüklendi.`;
+
+        tbody.innerHTML = cashCache.map(item => `
+          <tr>
+            <td>${formatDate(item.created_at)}</td>
+            <td><span class="report-pill ${item.transaction_type}">${item.transaction_type === "cash_in" ? "Kasa Giriş" : "Kasa Çıkış"}</span></td>
+            <td>${formatMoney(item.amount || 0)} ₺</td>
+            <td>${escapeHtml(item.description || "-")}</td>
+          </tr>
+        `).join("");
+      } catch {
+        statusBar.innerText = "Kasa hareketleri yüklenirken hata oluştu.";
+        tbody.innerHTML = `<tr><td colspan="4">Kasa verileri alınamadı.</td></tr>`;
+      }
+    }
+
+    function printCash() {
+      window.print();
+    }
+
+    async function downloadCashPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9 KASA RAPORU", 14, y); y += 10;
+      doc.setFontSize(11);
+      doc.text(`Toplam Giris: ${document.getElementById("cashSummaryIn").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Cikis: ${document.getElementById("cashSummaryOut").innerText}`, 14, y); y += 7;
+      doc.text(`Kasa Bakiye: ${document.getElementById("cashSummaryBalance").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Hareket: ${document.getElementById("cashSummaryCount").innerText}`, 14, y); y += 12;
+
+      if (!cashCache.length) {
+        doc.text("Kasa hareketi bulunamadi.", 14, y);
+        doc.save("DML_VERESIYE9_Kasa_Raporu.pdf");
+        return;
+      }
+
+      cashCache.forEach((item, index) => {
+        const typeText = item.transaction_type === "cash_in" ? "Kasa Giris" : "Kasa Cikis";
+        const line1 = `${index + 1}. ${typeText} - ${formatMoney(item.amount || 0)} TL`;
+        const line2 = `Aciklama: ${(item.description || "-").slice(0, 70)}`;
+        const line3 = `Tarih: ${formatDate(item.created_at)}`;
+
+        if (y > 255) { doc.addPage(); y = 20; }
+
+        doc.setFontSize(11);
+        doc.text(line1, 14, y); y += 6;
+        doc.text(line2, 14, y); y += 6;
+        doc.text(line3, 14, y); y += 10;
+      });
+
+      doc.save("DML_VERESIYE9_Kasa_Raporu.pdf");
+    }
+
+    async function loadSettings() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("settingsStatusBar");
+      if (!tenant) return;
+
+      statusBar.innerText = "Ayarlar yükleniyor...";
+
+      try {
+        const settingsUrl = `${SUPABASE_URL}/rest/v1/business_settings?tenant_id=eq.${tenant.tenant_id}&select=*&limit=1`;
+        const tenantUrl = `${SUPABASE_URL}/rest/v1/tenants?id=eq.${tenant.tenant_id}&select=id,company_name,license_type,license_start_date,license_end_date&limit=1`;
+
+        const [settingsRes, tenantRes] = await Promise.all([
+          fetch(settingsUrl, { method: "GET", headers: getHeaders() }),
+          fetch(tenantUrl, { method: "GET", headers: getHeaders() })
+        ]);
+
+        const settingsData = await settingsRes.json();
+        const tenantData = await tenantRes.json();
+
+        const settings = Array.isArray(settingsData) && settingsData.length > 0 ? settingsData[0] : null;
+        const tenantInfo = Array.isArray(tenantData) && tenantData.length > 0 ? tenantData[0] : null;
+
+        document.getElementById("settingCompanyName").value = settings?.company_name || tenantInfo?.company_name || "";
+        document.getElementById("settingOwnerName").value = settings?.owner_name || "";
+        document.getElementById("settingPhone").value = settings?.phone || "";
+        document.getElementById("settingAddress").value = settings?.address || "";
+        document.getElementById("settingLogoUrl").value = settings?.logo_url || "";
+
+        updateSettingsPreview();
+
+        if (tenantInfo) {
+          const licenseType = (tenantInfo.license_type || "demo").toLowerCase();
+          const startText = formatOnlyDate(tenantInfo.license_start_date);
+          const endText = formatOnlyDate(tenantInfo.license_end_date);
+          const remainingDays = calculateRemainingDays(tenantInfo.license_end_date);
+
+          document.getElementById("licenseTypeText").innerText = licenseType === "demo" ? "Demo" : "Lisanslı";
+          document.getElementById("licenseBadge").innerText = licenseType === "demo" ? "Demo" : "Lisanslı";
+          document.getElementById("licenseBadge").className = `license-badge ${licenseType === "demo" ? "demo" : "paid"}`;
+          document.getElementById("licenseDaysText").innerText = licenseType === "demo"
+            ? `Demo kullanım - kalan gün: ${remainingDays}`
+            : `Lisans kalan gün: ${remainingDays}`;
+          document.getElementById("licenseStartText").innerText = startText;
+          document.getElementById("licenseEndText").innerText = endText;
+        }
+
+        statusBar.innerText = "Ayarlar yüklendi.";
+      } catch {
+        statusBar.innerText = "Ayarlar yüklenirken hata oluştu.";
+      }
+    }
+
+    async function saveSettings() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("settingsStatusBar");
+      if (!tenant) return;
+
+      const payload = {
+        tenant_id: tenant.tenant_id,
+        company_name: document.getElementById("settingCompanyName").value.trim(),
+        owner_name: document.getElementById("settingOwnerName").value.trim(),
+        phone: document.getElementById("settingPhone").value.trim(),
+        address: document.getElementById("settingAddress").value.trim(),
+        logo_url: document.getElementById("settingLogoUrl").value.trim()
+      };
+
+      statusBar.innerText = "Firma bilgileri kaydediliyor...";
+
+      try {
+        const existingRes = await fetch(`${SUPABASE_URL}/rest/v1/business_settings?tenant_id=eq.${tenant.tenant_id}&select=id&limit=1`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const existingData = await existingRes.json();
+        const existing = Array.isArray(existingData) && existingData.length > 0 ? existingData[0] : null;
+
+        let res;
+        if (existing?.id) {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/business_settings?id=eq.${existing.id}`, {
+            method: "PATCH",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/business_settings`, {
+            method: "POST",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify(payload)
+          });
+        }
+
+        if (!res.ok) {
+          statusBar.innerText = "Firma bilgileri kaydedilemedi.";
+          return;
+        }
+
+        if (payload.company_name) {
+          await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${tenant.tenant_id}`, {
+            method: "PATCH",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify({ company_name: payload.company_name })
+          });
+
+          document.getElementById("companyName").innerText = payload.company_name;
+        }
+
+        updateSettingsPreview();
+        statusBar.innerText = "Firma bilgileri başarıyla kaydedildi.";
+      } catch {
+        statusBar.innerText = "Ayarlar kaydedilirken bağlantı hatası oluştu.";
+      }
+    }
+
+    function updateSettingsPreview() {
+      const company = document.getElementById("settingCompanyName").value.trim() || "-";
+      const owner = document.getElementById("settingOwnerName").value.trim() || "-";
+      const phone = document.getElementById("settingPhone").value.trim() || "-";
+      const address = document.getElementById("settingAddress").value.trim() || "-";
+      const logoUrl = document.getElementById("settingLogoUrl").value.trim();
+
+      document.getElementById("previewCompanyName").innerText = company;
+      document.getElementById("previewOwnerName").innerText = owner;
+      document.getElementById("previewPhone").innerText = phone;
+      document.getElementById("previewAddress").innerText = address;
+
+      const logo = document.getElementById("settingsLogoPreview");
+      if (logoUrl) {
+        logo.src = logoUrl;
+        logo.style.display = "block";
+      } else {
+        logo.src = "logo.png";
+      }
+    }
+
+    function calculateRemainingDays(endDate) {
+      if (!endDate) return "-";
+      const today = new Date();
+      const end = new Date(endDate);
+      today.setHours(0,0,0,0);
+      end.setHours(0,0,0,0);
+      const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      return diff < 0 ? 0 : diff;
+    }
+
+    function formatOnlyDate(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("tr-TR");
+    }
+
+    function openPanel(tenant) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("panelScreen").classList.remove("hidden");
+      document.getElementById("companyName").innerText = tenant.company_name || "-";
+      fetchCustomers(tenant.tenant_id);
+      showCustomersView();
+    }
+
+    function refreshCustomers() {
+      const tenant = getSavedTenant();
+      if (!tenant) return;
+      fetchCustomers(tenant.tenant_id);
+    }
+
+    function logout() {
+      localStorage.removeItem("dml_user");
+      document.getElementById("panelScreen").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("msg").innerText = "";
+      document.getElementById("user").value = "";
+      document.getElementById("pass").value = "";
+      document.getElementById("newCustomerName").value = "";
+      document.getElementById("newCustomerPhone").value = "";
+      document.getElementById("newCustomerAddress").value = "";
+      document.getElementById("cards").innerHTML = "";
+      document.getElementById("statusBar").innerText = "";
+      document.getElementById("cashStatusBar").innerText = "";
+      document.getElementById("settingsStatusBar").innerText = "";
+      document.getElementById("customerFormBox").classList.add("hidden");
+      closeTransactionModal();
+      closeDetailModal();
+      closeEditTransactionModal();
+      showCustomersView();
+    }
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString("tr-TR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return date.toLocaleString("tr-TR");
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeJs(text) {
+      return String(text)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll('"', '\\"');
+    }
+
+    window.onload = function () {
+      const tenant = getSavedTenant();
+      if (tenant) openPanel(tenant);
+
+      ["settingCompanyName","settingOwnerName","settingPhone","settingAddress","settingLogoUrl"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", updateSettingsPreview);
+      });
+    };
+  </script>
 </body>
 </html>
