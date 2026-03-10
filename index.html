@@ -208,6 +208,13 @@
       cursor: default;
     }
 
+    .right-tools {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
     .refresh-btn {
       background: #ff7a00;
       color: white;
@@ -215,6 +222,44 @@
       border-radius: 12px;
       font-weight: 700;
       box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
+    }
+
+    .form-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f5f54;
+      margin-bottom: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 340px) minmax(140px, 180px);
+      gap: 12px;
+      align-items: end;
+    }
+
+    .save-btn {
+      background: #0f5f54;
+      color: white;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+      height: 48px;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-1px);
     }
 
     .status-bar {
@@ -341,6 +386,10 @@
         font-size: 24px;
       }
 
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
       .cards {
         grid-template-columns: repeat(auto-fill, minmax(220px, 220px));
         justify-content: center;
@@ -399,7 +448,22 @@
           <button class="menu-btn">Ayarlar</button>
         </div>
 
-        <button class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
+        <div class="right-tools">
+          <button class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
+        </div>
+      </div>
+
+      <div class="form-box">
+        <div class="form-title">Yeni Müşteri Ekle</div>
+        <div class="form-grid">
+          <div>
+            <label for="newCustomerName">Müşteri Adı</label>
+            <input id="newCustomerName" type="text" placeholder="Örn: Kaya Market" />
+          </div>
+          <div>
+            <button class="save-btn" onclick="addCustomer()">Kaydet</button>
+          </div>
+        </div>
       </div>
 
       <div id="statusBar" class="status-bar"></div>
@@ -476,7 +540,7 @@
           statusBar.innerText = "Müşteri bulunamadı.";
           cards.innerHTML = `
             <div class="empty">
-              Bu firmaya ait müşteri bulunamadı. Bir sonraki adımda yeni müşteri ekleme ekranını ekleyeceğiz.
+              Bu firmaya ait müşteri bulunamadı. Yukarıdan yeni müşteri ekleyebilirsin.
             </div>
           `;
           return;
@@ -501,9 +565,68 @@
         statusBar.innerText = "Müşteriler yüklenirken hata oluştu.";
         cards.innerHTML = `
           <div class="empty">
-            Supabase bağlantısı var ama müşteri listesi okunamadı. Bir sonraki adımda bunu da güçlendireceğiz.
+            Supabase bağlantısı var ama müşteri listesi okunamadı.
           </div>
         `;
+      }
+    }
+
+    async function addCustomer() {
+      const input = document.getElementById("newCustomerName");
+      const name = input.value.trim();
+      const statusBar = document.getElementById("statusBar");
+      const savedUser = localStorage.getItem("dml_user");
+
+      if (!savedUser) {
+        statusBar.innerText = "Önce giriş yapılmalı.";
+        return;
+      }
+
+      if (!name) {
+        statusBar.innerText = "Müşteri adı boş bırakılamaz.";
+        input.focus();
+        return;
+      }
+
+      let tenant;
+      try {
+        tenant = JSON.parse(savedUser);
+      } catch (e) {
+        localStorage.removeItem("dml_user");
+        statusBar.innerText = "Oturum bilgisi okunamadı.";
+        return;
+      }
+
+      statusBar.innerText = "Müşteri kaydediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({
+            tenant_id: tenant.tenant_id,
+            full_name: name,
+            balance: 0
+          })
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          statusBar.innerText = "Müşteri kaydedilemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        input.value = "";
+        statusBar.innerText = "Müşteri başarıyla eklendi.";
+        fetchCustomers(tenant.tenant_id);
+      } catch (error) {
+        statusBar.innerText = "Müşteri eklenirken bağlantı hatası oluştu.";
       }
     }
 
@@ -533,6 +656,7 @@
       document.getElementById("msg").innerText = "";
       document.getElementById("user").value = "";
       document.getElementById("pass").value = "";
+      document.getElementById("newCustomerName").value = "";
       document.getElementById("cards").innerHTML = "";
       document.getElementById("statusBar").innerText = "";
     }
@@ -545,7 +669,7 @@
     }
 
     function escapeHtml(text) {
-      return text
+      return String(text)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
