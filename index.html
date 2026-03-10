@@ -91,7 +91,7 @@
       color: #374151;
     }
 
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 14px 14px;
       border: 1px solid #d1d5db;
@@ -100,9 +100,15 @@
       font-size: 15px;
       outline: none;
       background: #fff;
+      font-family: inherit;
     }
 
-    input:focus, select:focus {
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
       border-color: #0f5f54;
       box-shadow: 0 0 0 3px rgba(15, 95, 84, 0.12);
     }
@@ -283,7 +289,8 @@
 
     .form-box,
     .report-box,
-    .cash-box {
+    .cash-box,
+    .settings-box {
       background: #ffffff;
       border: 1px solid #e5e7eb;
       border-radius: 18px;
@@ -294,7 +301,8 @@
 
     .form-title,
     .report-title,
-    .cash-title {
+    .cash-title,
+    .settings-title {
       font-size: 18px;
       font-weight: 700;
       color: #0f5f54;
@@ -309,11 +317,19 @@
     }
 
     .report-filter-grid,
-    .cash-filter-grid {
+    .cash-filter-grid,
+    .settings-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       align-items: end;
+    }
+
+    .settings-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      align-items: start;
     }
 
     .save-btn {
@@ -340,7 +356,8 @@
     }
 
     .customer-card,
-    .summary-card {
+    .summary-card,
+    .license-card {
       position: relative;
       overflow: hidden;
       background: #ffffff;
@@ -350,7 +367,8 @@
     }
 
     .customer-card::before,
-    .summary-card::before {
+    .summary-card::before,
+    .license-card::before {
       content: "";
       position: absolute;
       top: 0;
@@ -440,7 +458,8 @@
       margin-bottom: 18px;
     }
 
-    .summary-card {
+    .summary-card,
+    .license-card {
       padding: 20px;
       min-height: 130px;
     }
@@ -457,6 +476,63 @@
       color: #111827;
       font-size: 28px;
       font-weight: 800;
+    }
+
+    .license-badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .license-badge.demo {
+      background: #fff1e6;
+      color: #ff7a00;
+    }
+
+    .license-badge.paid {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .license-line {
+      margin-top: 12px;
+      font-size: 15px;
+      color: #374151;
+      font-weight: 700;
+    }
+
+    .settings-preview {
+      background: #f9fafb;
+      border: 1px solid #eceff3;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .settings-preview h3 {
+      margin: 0 0 12px 0;
+      color: #0f5f54;
+      font-size: 18px;
+    }
+
+    .settings-preview p {
+      margin: 0 0 10px 0;
+      color: #4b5563;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .settings-logo-preview {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      padding: 4px;
+      margin-bottom: 12px;
     }
 
     .report-table-wrap {
@@ -691,106 +767,16 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
-    .print-area-title { display: none; }
-
-    body.print-report .panel > * { display: none !important; }
-    body.print-report #reportsView,
-    body.print-report #reportsView * {
-      display: block !important;
-      visibility: visible !important;
-    }
-
-    body.print-report #reportsView .report-table { display: table !important; width: 100%; }
-    body.print-report #reportsView .report-table thead { display: table-header-group !important; }
-    body.print-report #reportsView .report-table tbody { display: table-row-group !important; }
-    body.print-report #reportsView .report-table tr { display: table-row !important; }
-    body.print-report #reportsView .report-table th,
-    body.print-report #reportsView .report-table td { display: table-cell !important; }
-
-    body.print-cash .panel > * { display: none !important; }
-    body.print-cash #cashView,
-    body.print-cash #cashView * {
-      display: block !important;
-      visibility: visible !important;
-    }
-
-    body.print-cash #cashView .report-table { display: table !important; width: 100%; }
-    body.print-cash #cashView .report-table thead { display: table-header-group !important; }
-    body.print-cash #cashView .report-table tbody { display: table-row-group !important; }
-    body.print-cash #cashView .report-table tr { display: table-row !important; }
-    body.print-cash #cashView .report-table th,
-    body.print-cash #cashView .report-table td { display: table-cell !important; }
-
-    @media print {
-      body:not(.print-report):not(.print-cash) * { visibility: hidden; }
-      body:not(.print-report):not(.print-cash) #printArea,
-      body:not(.print-report):not(.print-cash) #printArea * { visibility: visible; }
-
-      body:not(.print-report):not(.print-cash) #printArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background: white;
-        color: black;
-        padding: 24px;
-      }
-
-      body:not(.print-report):not(.print-cash) .detail-tools,
-      body:not(.print-report):not(.print-cash) .history-actions,
-      body:not(.print-report):not(.print-cash) .logout {
-        display: none !important;
-      }
-
-      body:not(.print-report):not(.print-cash) .print-area-title {
-        display: block;
-        margin-bottom: 18px;
-      }
-
-      body.print-report,
-      body.print-cash {
-        background: white !important;
-      }
-
-      body.print-report .main,
-      body.print-cash .main {
-        padding: 0 !important;
-      }
-
-      body.print-report .top-actions,
-      body.print-report .form-box,
-      body.print-report #statusBar,
-      body.print-report .report-box .report-filter-grid,
-      body.print-report .report-box .detail-tools,
-      body.print-cash .top-actions,
-      body.print-cash .cash-box .cash-filter-grid,
-      body.print-cash .cash-box .detail-tools {
-        display: none !important;
-      }
-
-      body.print-report #reportsView,
-      body.print-cash #cashView {
-        padding: 24px !important;
-        background: white !important;
-      }
-
-      body.print-report .report-box,
-      body.print-report .summary-card,
-      body.print-report .report-table-wrap,
-      body.print-cash .cash-box,
-      body.print-cash .summary-card,
-      body.print-cash .report-table-wrap {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-      }
-    }
-
     @media (max-width: 700px) {
       .header { align-items: flex-start; }
       .header-title { font-size: 24px; }
       .form-grid,
       .report-filter-grid,
-      .cash-filter-grid { grid-template-columns: 1fr; }
+      .cash-filter-grid,
+      .settings-grid,
+      .settings-grid-2 {
+        grid-template-columns: 1fr;
+      }
 
       .cards {
         grid-template-columns: repeat(auto-fill, minmax(220px, 220px));
@@ -856,7 +842,7 @@
           <button id="menuCustomers" class="menu-btn-link active" onclick="showCustomersView()">Müşteriler</button>
           <button id="menuReports" class="menu-btn-link" onclick="showReportsView()">Raporlar</button>
           <button id="menuCash" class="menu-btn-link" onclick="showCashView()">Kasa</button>
-          <button class="menu-btn">Ayarlar</button>
+          <button id="menuSettings" class="menu-btn-link" onclick="showSettingsView()">Ayarlar</button>
         </div>
 
         <div class="right-tools">
@@ -897,10 +883,6 @@
             <div>
               <button class="report-btn" onclick="loadReports()">Raporu Getir</button>
             </div>
-            <div class="detail-tools" style="margin:0;">
-              <button class="secondary-btn" onclick="printReports()">Yazdır</button>
-              <button class="secondary-btn" onclick="downloadReportsPdf()">PDF Aktar</button>
-            </div>
           </div>
         </div>
 
@@ -923,23 +905,30 @@
           </div>
         </div>
 
-        <div class="report-table-wrap">
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th>Tarih</th>
-                <th>Müşteri</th>
-                <th>İşlem Türü</th>
-                <th>Tutar</th>
-                <th>Açıklama</th>
-              </tr>
-            </thead>
-            <tbody id="reportTableBody">
-              <tr>
-                <td colspan="5">Rapor henüz yüklenmedi.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="report-box">
+          <div class="detail-tools" style="margin-bottom:14px;">
+            <button class="secondary-btn" onclick="printReports()">Yazdır</button>
+            <button class="secondary-btn" onclick="downloadReportsPdf()">PDF Aktar</button>
+          </div>
+
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>Müşteri</th>
+                  <th>İşlem Türü</th>
+                  <th>Tutar</th>
+                  <th>Açıklama</th>
+                </tr>
+              </thead>
+              <tbody id="reportTableBody">
+                <tr>
+                  <td colspan="5">Rapor henüz yüklenmedi.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -982,10 +971,6 @@
             <div>
               <button class="report-btn" onclick="loadCash()">Kasayı Getir</button>
             </div>
-            <div class="detail-tools" style="margin:0;">
-              <button class="secondary-btn" onclick="printCash()">Yazdır</button>
-              <button class="secondary-btn" onclick="downloadCashPdf()">PDF Aktar</button>
-            </div>
           </div>
         </div>
 
@@ -1010,23 +995,91 @@
           </div>
         </div>
 
-        <div class="report-table-wrap">
-          <table class="report-table">
-            <thead>
-              <tr>
-                <th>Tarih</th>
-                <th>İşlem Türü</th>
-                <th>Tutar</th>
-                <th>Açıklama</th>
-              </tr>
-            </thead>
-            <tbody id="cashTableBody">
-              <tr>
-                <td colspan="4">Kasa henüz yüklenmedi.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="cash-box">
+          <div class="detail-tools" style="margin-bottom:14px;">
+            <button class="secondary-btn" onclick="printCash()">Yazdır</button>
+            <button class="secondary-btn" onclick="downloadCashPdf()">PDF Aktar</button>
+          </div>
+
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>İşlem Türü</th>
+                  <th>Tutar</th>
+                  <th>Açıklama</th>
+                </tr>
+              </thead>
+              <tbody id="cashTableBody">
+                <tr>
+                  <td colspan="4">Kasa henüz yüklenmedi.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+
+      <div id="settingsView" class="hidden">
+        <div class="summary-grid">
+          <div class="license-card">
+            <div class="summary-label">Lisans Durumu</div>
+            <div id="licenseTypeText" class="summary-value" style="font-size:24px;">-</div>
+            <div id="licenseBadge" class="license-badge demo">Demo</div>
+            <div id="licenseDaysText" class="license-line">Kalan gün: -</div>
+          </div>
+
+          <div class="license-card">
+            <div class="summary-label">Başlangıç Tarihi</div>
+            <div id="licenseStartText" class="summary-value" style="font-size:22px;">-</div>
+            <div class="license-line">Lisans başlangıç tarihi</div>
+          </div>
+
+          <div class="license-card">
+            <div class="summary-label">Bitiş Tarihi</div>
+            <div id="licenseEndText" class="summary-value" style="font-size:22px;">-</div>
+            <div class="license-line">Lisans bitiş tarihi</div>
+          </div>
+        </div>
+
+        <div class="settings-box">
+          <div class="settings-title">Firma Bilgileri</div>
+          <div class="settings-grid-2">
+            <div>
+              <label for="settingCompanyName">Firma Adı</label>
+              <input id="settingCompanyName" type="text" placeholder="Firma adı" />
+
+              <label for="settingOwnerName">Yetkili Adı</label>
+              <input id="settingOwnerName" type="text" placeholder="Yetkili adı" />
+
+              <label for="settingPhone">Telefon</label>
+              <input id="settingPhone" type="text" placeholder="Telefon numarası" />
+
+              <label for="settingAddress">Adres</label>
+              <textarea id="settingAddress" placeholder="Firma adresi"></textarea>
+
+              <label for="settingLogoUrl">Logo Linki</label>
+              <input id="settingLogoUrl" type="text" placeholder="https://..." />
+
+              <button class="save-btn" style="width:100%;" onclick="saveSettings()">Bilgileri Kaydet</button>
+            </div>
+
+            <div>
+              <div class="settings-preview">
+                <img id="settingsLogoPreview" src="logo.png" alt="Logo Önizleme" class="settings-logo-preview" onerror="this.style.display='none'">
+                <h3>Önizleme</h3>
+                <p><strong>Firma:</strong> <span id="previewCompanyName">-</span></p>
+                <p><strong>Yetkili:</strong> <span id="previewOwnerName">-</span></p>
+                <p><strong>Telefon:</strong> <span id="previewPhone">-</span></p>
+                <p><strong>Adres:</strong> <span id="previewAddress">-</span></p>
+                <p><strong>İletişim Hattı:</strong> 0 541 465 66 22</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="settingsStatusBar" class="status-bar"></div>
       </div>
 
     </div>
@@ -1083,16 +1136,8 @@
         <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
         <button class="logout" onclick="closeDetailModal()">Kapat</button>
       </div>
-      <div class="detail-body" id="printArea">
-        <div class="print-area-title">
-          <h2 id="printCustomerName">Cari Detay</h2>
-          <p id="printCustomerBalance">Borç: 0 ₺</p>
-          <p>İletişim: 0 541 465 66 22</p>
-          <hr>
-        </div>
-
+      <div class="detail-body">
         <div class="detail-tools">
-          <button class="secondary-btn" onclick="printDetail()">Yazdır</button>
           <button class="secondary-btn" onclick="downloadDetailPdf()">PDF Aktar</button>
           <button class="danger-btn" onclick="deleteCustomer()">Müşteriyi Sil</button>
         </div>
@@ -1165,42 +1210,48 @@
     }
 
     function showCustomersView() {
+      hideAllViews();
       document.getElementById("customersView").classList.remove("hidden");
-      document.getElementById("reportsView").classList.add("hidden");
-      document.getElementById("cashView").classList.add("hidden");
-
-      document.getElementById("menuCustomers").classList.add("active");
-      document.getElementById("menuReports").classList.remove("active");
-      document.getElementById("menuCash").classList.remove("active");
-
+      setActiveMenu("menuCustomers");
       document.getElementById("globalRefreshBtn").classList.remove("hidden");
-      document.body.classList.remove("print-report", "print-cash");
     }
 
     function showReportsView() {
-      document.getElementById("customersView").classList.add("hidden");
+      hideAllViews();
       document.getElementById("reportsView").classList.remove("hidden");
-      document.getElementById("cashView").classList.add("hidden");
-
-      document.getElementById("menuCustomers").classList.remove("active");
-      document.getElementById("menuReports").classList.add("active");
-      document.getElementById("menuCash").classList.remove("active");
-
+      setActiveMenu("menuReports");
       document.getElementById("globalRefreshBtn").classList.add("hidden");
       loadReports();
     }
 
     function showCashView() {
-      document.getElementById("customersView").classList.add("hidden");
-      document.getElementById("reportsView").classList.add("hidden");
+      hideAllViews();
       document.getElementById("cashView").classList.remove("hidden");
-
-      document.getElementById("menuCustomers").classList.remove("active");
-      document.getElementById("menuReports").classList.remove("active");
-      document.getElementById("menuCash").classList.add("active");
-
+      setActiveMenu("menuCash");
       document.getElementById("globalRefreshBtn").classList.add("hidden");
       loadCash();
+    }
+
+    function showSettingsView() {
+      hideAllViews();
+      document.getElementById("settingsView").classList.remove("hidden");
+      setActiveMenu("menuSettings");
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
+      loadSettings();
+    }
+
+    function hideAllViews() {
+      document.getElementById("customersView").classList.add("hidden");
+      document.getElementById("reportsView").classList.add("hidden");
+      document.getElementById("cashView").classList.add("hidden");
+      document.getElementById("settingsView").classList.add("hidden");
+    }
+
+    function setActiveMenu(id) {
+      ["menuCustomers","menuReports","menuCash","menuSettings"].forEach(menuId => {
+        document.getElementById(menuId).classList.remove("active");
+      });
+      document.getElementById(id).classList.add("active");
     }
 
     async function fetchCustomers(tenantId) {
@@ -1385,8 +1436,6 @@
       activeDetail = { customerId, customerName, balance };
       document.getElementById("detailCustomerName").innerText = customerName;
       document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
-      document.getElementById("printCustomerName").innerText = customerName;
-      document.getElementById("printCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
       document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yükleniyor...</div>`;
       document.getElementById("detailModalBackdrop").classList.remove("hidden");
 
@@ -1426,11 +1475,6 @@
       activeDetail = { customerId: null, customerName: "", balance: 0 };
     }
 
-    function printDetail() {
-      document.body.classList.remove("print-report", "print-cash");
-      window.print();
-    }
-
     async function downloadDetailPdf() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -1444,7 +1488,6 @@
       doc.setFontSize(14);
       doc.text(detailName, 14, y); y += 8;
       doc.text(detailBalance, 14, y); y += 8;
-      doc.text("Iletisim: 0 541 465 66 22", 14, y); y += 12;
 
       items.forEach((item, index) => {
         const type = item.querySelector(".history-type")?.innerText || "";
@@ -1617,7 +1660,6 @@
         const customerData = await balanceRes.json();
         const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
         const amountNum = Number(amount || 0);
-
         const newBalance = type === "sale" ? currentBalance - amountNum : currentBalance + amountNum;
 
         const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
@@ -1705,9 +1747,7 @@
     }
 
     function printReports() {
-      document.body.classList.add("print-report");
       window.print();
-      setTimeout(() => document.body.classList.remove("print-report"), 500);
     }
 
     async function downloadReportsPdf() {
@@ -1849,9 +1889,7 @@
     }
 
     function printCash() {
-      document.body.classList.add("print-cash");
       window.print();
-      setTimeout(() => document.body.classList.remove("print-cash"), 500);
     }
 
     async function downloadCashPdf() {
@@ -1890,6 +1928,157 @@
       doc.save("DML_VERESIYE9_Kasa_Raporu.pdf");
     }
 
+    async function loadSettings() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("settingsStatusBar");
+      if (!tenant) return;
+
+      statusBar.innerText = "Ayarlar yükleniyor...";
+
+      try {
+        const settingsUrl = `${SUPABASE_URL}/rest/v1/business_settings?tenant_id=eq.${tenant.tenant_id}&select=*&limit=1`;
+        const tenantUrl = `${SUPABASE_URL}/rest/v1/tenants?id=eq.${tenant.tenant_id}&select=id,company_name,license_type,license_start_date,license_end_date&limit=1`;
+
+        const [settingsRes, tenantRes] = await Promise.all([
+          fetch(settingsUrl, { method: "GET", headers: getHeaders() }),
+          fetch(tenantUrl, { method: "GET", headers: getHeaders() })
+        ]);
+
+        const settingsData = await settingsRes.json();
+        const tenantData = await tenantRes.json();
+
+        const settings = Array.isArray(settingsData) && settingsData.length > 0 ? settingsData[0] : null;
+        const tenantInfo = Array.isArray(tenantData) && tenantData.length > 0 ? tenantData[0] : null;
+
+        document.getElementById("settingCompanyName").value = settings?.company_name || tenantInfo?.company_name || "";
+        document.getElementById("settingOwnerName").value = settings?.owner_name || "";
+        document.getElementById("settingPhone").value = settings?.phone || "";
+        document.getElementById("settingAddress").value = settings?.address || "";
+        document.getElementById("settingLogoUrl").value = settings?.logo_url || "";
+
+        updateSettingsPreview();
+
+        if (tenantInfo) {
+          const licenseType = (tenantInfo.license_type || "demo").toLowerCase();
+          const startText = formatOnlyDate(tenantInfo.license_start_date);
+          const endText = formatOnlyDate(tenantInfo.license_end_date);
+          const remainingDays = calculateRemainingDays(tenantInfo.license_end_date);
+
+          document.getElementById("licenseTypeText").innerText = licenseType === "demo" ? "Demo" : "Lisanslı";
+          document.getElementById("licenseBadge").innerText = licenseType === "demo" ? "Demo" : "Lisanslı";
+          document.getElementById("licenseBadge").className = `license-badge ${licenseType === "demo" ? "demo" : "paid"}`;
+          document.getElementById("licenseDaysText").innerText = licenseType === "demo"
+            ? `Demo kullanım - kalan gün: ${remainingDays}`
+            : `Lisans kalan gün: ${remainingDays}`;
+          document.getElementById("licenseStartText").innerText = startText;
+          document.getElementById("licenseEndText").innerText = endText;
+        }
+
+        statusBar.innerText = "Ayarlar yüklendi.";
+      } catch {
+        statusBar.innerText = "Ayarlar yüklenirken hata oluştu.";
+      }
+    }
+
+    async function saveSettings() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("settingsStatusBar");
+      if (!tenant) return;
+
+      const payload = {
+        tenant_id: tenant.tenant_id,
+        company_name: document.getElementById("settingCompanyName").value.trim(),
+        owner_name: document.getElementById("settingOwnerName").value.trim(),
+        phone: document.getElementById("settingPhone").value.trim(),
+        address: document.getElementById("settingAddress").value.trim(),
+        logo_url: document.getElementById("settingLogoUrl").value.trim()
+      };
+
+      statusBar.innerText = "Firma bilgileri kaydediliyor...";
+
+      try {
+        const existingRes = await fetch(`${SUPABASE_URL}/rest/v1/business_settings?tenant_id=eq.${tenant.tenant_id}&select=id&limit=1`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const existingData = await existingRes.json();
+        const existing = Array.isArray(existingData) && existingData.length > 0 ? existingData[0] : null;
+
+        let res;
+        if (existing?.id) {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/business_settings?id=eq.${existing.id}`, {
+            method: "PATCH",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch(`${SUPABASE_URL}/rest/v1/business_settings`, {
+            method: "POST",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify(payload)
+          });
+        }
+
+        if (!res.ok) {
+          statusBar.innerText = "Firma bilgileri kaydedilemedi.";
+          return;
+        }
+
+        if (payload.company_name) {
+          await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${tenant.tenant_id}`, {
+            method: "PATCH",
+            headers: getHeaders({ "Prefer": "return=representation" }),
+            body: JSON.stringify({ company_name: payload.company_name })
+          });
+
+          document.getElementById("companyName").innerText = payload.company_name;
+        }
+
+        updateSettingsPreview();
+        statusBar.innerText = "Firma bilgileri başarıyla kaydedildi.";
+      } catch {
+        statusBar.innerText = "Ayarlar kaydedilirken bağlantı hatası oluştu.";
+      }
+    }
+
+    function updateSettingsPreview() {
+      const company = document.getElementById("settingCompanyName").value.trim() || "-";
+      const owner = document.getElementById("settingOwnerName").value.trim() || "-";
+      const phone = document.getElementById("settingPhone").value.trim() || "-";
+      const address = document.getElementById("settingAddress").value.trim() || "-";
+      const logoUrl = document.getElementById("settingLogoUrl").value.trim();
+
+      document.getElementById("previewCompanyName").innerText = company;
+      document.getElementById("previewOwnerName").innerText = owner;
+      document.getElementById("previewPhone").innerText = phone;
+      document.getElementById("previewAddress").innerText = address;
+
+      const logo = document.getElementById("settingsLogoPreview");
+      if (logoUrl) {
+        logo.src = logoUrl;
+        logo.style.display = "block";
+      } else {
+        logo.src = "logo.png";
+      }
+    }
+
+    function calculateRemainingDays(endDate) {
+      if (!endDate) return "-";
+      const today = new Date();
+      const end = new Date(endDate);
+      today.setHours(0,0,0,0);
+      end.setHours(0,0,0,0);
+      const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      return diff < 0 ? 0 : diff;
+    }
+
+    function formatOnlyDate(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("tr-TR");
+    }
+
     function openPanel(tenant) {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("panelScreen").classList.remove("hidden");
@@ -1915,10 +2104,10 @@
       document.getElementById("cards").innerHTML = "";
       document.getElementById("statusBar").innerText = "";
       document.getElementById("cashStatusBar").innerText = "";
+      document.getElementById("settingsStatusBar").innerText = "";
       closeTransactionModal();
       closeDetailModal();
       closeEditTransactionModal();
-      document.body.classList.remove("print-report", "print-cash");
       showCustomersView();
     }
 
@@ -1954,6 +2143,11 @@
     window.onload = function () {
       const tenant = getSavedTenant();
       if (tenant) openPanel(tenant);
+
+      ["settingCompanyName","settingOwnerName","settingPhone","settingAddress","settingLogoUrl"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", updateSettingsPreview);
+      });
     };
   </script>
 </body>
