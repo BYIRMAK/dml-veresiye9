@@ -112,7 +112,8 @@
     .pay:hover,
     .logout:hover,
     .action-btn:hover,
-    .close-btn:hover {
+    .close-btn:hover,
+    .detail-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -281,7 +282,7 @@
       border-radius: 20px;
       padding: 20px;
       width: 240px;
-      min-height: 240px;
+      min-height: 270px;
       border: 1px solid #e5e7eb;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
       display: flex;
@@ -303,6 +304,7 @@
 
     .card-top {
       margin-top: 10px;
+      cursor: pointer;
     }
 
     .customer-name {
@@ -323,6 +325,18 @@
       border-radius: 12px;
       border: 1px solid #eceff3;
       display: inline-block;
+    }
+
+    .detail-btn {
+      margin-top: 12px;
+      width: 100%;
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 12px;
     }
 
     .actions {
@@ -435,6 +449,118 @@
       box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
     }
 
+    .detail-modal {
+      width: 100%;
+      max-width: 760px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .detail-head {
+      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .detail-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .detail-balance {
+      background: rgba(255,255,255,0.14);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .detail-body {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+      background: #f8fafb;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .history-type {
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      display: inline-block;
+    }
+
+    .history-type.sale {
+      background: #fff1e6;
+      color: #ff7a00;
+      box-shadow: none;
+    }
+
+    .history-type.payment {
+      background: #eaf7f3;
+      color: #0f5f54;
+      box-shadow: none;
+    }
+
+    .history-amount {
+      font-weight: 800;
+      font-size: 16px;
+      color: #111827;
+    }
+
+    .history-desc {
+      color: #4b5563;
+      font-size: 14px;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .history-date {
+      color: #6b7280;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .detail-empty {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
     @media (max-width: 700px) {
       .header {
         align-items: flex-start;
@@ -456,11 +582,14 @@
       .customer-card,
       .empty {
         width: 220px;
-        min-height: 230px;
       }
 
       .modal-actions {
         flex-direction: column;
+      }
+
+      .detail-head {
+        align-items: flex-start;
       }
     }
   </style>
@@ -555,6 +684,19 @@
     </div>
   </div>
 
+  <div id="detailModalBackdrop" class="modal-backdrop hidden">
+    <div class="detail-modal">
+      <div class="detail-head">
+        <div class="detail-title" id="detailCustomerName">Cari Detay</div>
+        <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
+        <button class="logout" onclick="closeDetailModal()">Kapat</button>
+      </div>
+      <div class="detail-body">
+        <div id="detailHistoryList" class="history-list"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
@@ -564,6 +706,12 @@
       customerName: "",
       tenantId: null,
       type: null
+    };
+
+    let activeDetail = {
+      customerId: null,
+      customerName: "",
+      balance: 0
     };
 
     async function login() {
@@ -641,9 +789,10 @@
 
         cards.innerHTML = data.map(customer => `
           <div class="customer-card">
-            <div class="card-top">
+            <div class="card-top" onclick="openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)})">
               <div class="customer-name">${escapeHtml(customer.full_name || "")}</div>
               <div class="customer-balance">Borç: ${formatMoney(customer.balance || 0)} ₺</div>
+              <button class="detail-btn" onclick="event.stopPropagation(); openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)})">Cari Detay</button>
             </div>
             <div class="actions">
               <button class="sale" onclick="openTransactionModal('sale', '${customer.id}', '${escapeJs(customer.full_name || "")}')">Satış Yap</button>
@@ -785,11 +934,14 @@
         return;
       }
 
+      const tenantId = activeTransaction.tenantId;
+      const customerId = activeTransaction.customerId;
+      const transactionTypeForDb = activeTransaction.type === "sale" ? "sale" : "payment";
+      const transactionTypeForText = activeTransaction.type === "sale" ? "Satış" : "Tahsilat";
+
       statusBar.innerText = "İşlem kaydediliyor...";
 
       try {
-        const transactionType = activeTransaction.type === "sale" ? "sale" : "payment";
-
         const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions`, {
           method: "POST",
           headers: {
@@ -799,11 +951,11 @@
             "Prefer": "return=representation"
           },
           body: JSON.stringify({
-            tenant_id: activeTransaction.tenantId,
-            customer_id: activeTransaction.customerId,
-            transaction_type: transactionType,
+            tenant_id: tenantId,
+            customer_id: customerId,
+            transaction_type: transactionTypeForDb,
             amount: amount,
-            description: description || (transactionType === "sale" ? "Satış işlemi" : "Tahsilat işlemi")
+            description: description || (transactionTypeForDb === "sale" ? "Satış işlemi" : "Tahsilat işlemi")
           })
         });
 
@@ -814,7 +966,7 @@
           return;
         }
 
-        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeTransaction.customerId}&select=id,balance`, {
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}&select=id,balance`, {
           method: "GET",
           headers: {
             "apikey": SUPABASE_PUBLISHABLE_KEY,
@@ -832,7 +984,7 @@
           ? currentBalance + amount
           : currentBalance - amount;
 
-        const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeTransaction.customerId}`, {
+        const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}`, {
           method: "PATCH",
           headers: {
             "apikey": SUPABASE_PUBLISHABLE_KEY,
@@ -852,16 +1004,83 @@
           return;
         }
 
+        statusBar.innerText = `${transactionTypeForText} başarıyla kaydedildi.`;
         closeTransactionModal();
-        statusBar.innerText = activeTransaction.type === "sale"
-          ? "Satış başarıyla kaydedildi."
-          : "Tahsilat başarıyla kaydedildi.";
+        await fetchCustomers(tenantId);
 
-        fetchCustomers(activeTransaction.tenantId);
+        if (!document.getElementById("detailModalBackdrop").classList.contains("hidden") && activeDetail.customerId === customerId) {
+          await openDetailModal(customerId, activeDetail.customerName, newBalance);
+        }
 
       } catch (error) {
         statusBar.innerText = "İşlem sırasında bağlantı hatası oluştu.";
       }
+    }
+
+    async function openDetailModal(customerId, customerName, balance) {
+      activeDetail = {
+        customerId,
+        customerName,
+        balance
+      };
+
+      document.getElementById("detailCustomerName").innerText = customerName;
+      document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
+      document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yükleniyor...</div>`;
+      document.getElementById("detailModalBackdrop").classList.remove("hidden");
+
+      try {
+        const url = `${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${customerId}&select=id,transaction_type,amount,description,created_at&order=created_at.desc`;
+
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          document.getElementById("detailHistoryList").innerHTML = `
+            <div class="detail-empty">
+              Bu müşteriye ait işlem geçmişi bulunamadı.
+            </div>
+          `;
+          return;
+        }
+
+        document.getElementById("detailHistoryList").innerHTML = data.map(item => `
+          <div class="history-item">
+            <div class="history-row">
+              <span class="history-type ${item.transaction_type === 'sale' ? 'sale' : 'payment'}">
+                ${item.transaction_type === 'sale' ? 'Satış' : 'Tahsilat'}
+              </span>
+              <span class="history-amount">${formatMoney(item.amount || 0)} ₺</span>
+            </div>
+            <div class="history-desc">${escapeHtml(item.description || 'Açıklama yok')}</div>
+            <div class="history-date">${formatDate(item.created_at)}</div>
+          </div>
+        `).join("");
+
+      } catch (error) {
+        document.getElementById("detailHistoryList").innerHTML = `
+          <div class="detail-empty">
+            İşlem geçmişi yüklenemedi.
+          </div>
+        `;
+      }
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detailModalBackdrop").classList.add("hidden");
+      activeDetail = {
+        customerId: null,
+        customerName: "",
+        balance: 0
+      };
     }
 
     function openPanel(tenant) {
@@ -894,6 +1113,7 @@
       document.getElementById("cards").innerHTML = "";
       document.getElementById("statusBar").innerText = "";
       closeTransactionModal();
+      closeDetailModal();
     }
 
     function formatMoney(value) {
@@ -901,6 +1121,12 @@
         minimumFractionDigits: 0,
         maximumFractionDigits: 2
       });
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return date.toLocaleString("tr-TR");
     }
 
     function escapeHtml(text) {
