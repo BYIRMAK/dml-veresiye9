@@ -1,113 +1,383 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>DML VERESİYE9</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DML VERESİYE9</title>
 
-<style>
+  <style>
+    *{
+      box-sizing:border-box;
+    }
 
-body{
-font-family:Arial;
-background:#f4f6f8;
-margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:#f3f5f7;
+      color:#1f2937;
+    }
 
-.login-box{
-background:white;
-padding:40px;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-width:300px;
-text-align:center;
-}
+    .app{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
 
-h1{
-color:#0f5f54;
-margin-bottom:20px;
-}
+    .login-card{
+      width:100%;
+      max-width:420px;
+      background:white;
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.10);
+      overflow:hidden;
+    }
 
-input{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:1px solid #ddd;
-border-radius:5px;
-}
+    .top{
+      background:#0f5f54;
+      color:white;
+      padding:28px 24px 20px 24px;
+    }
 
-button{
-width:100%;
-padding:12px;
-margin-top:20px;
-background:#ff7a00;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
-font-size:16px;
-}
+    .brand{
+      font-size:30px;
+      font-weight:700;
+      margin:0 0 8px 0;
+    }
 
-button:hover{
-background:#e46b00;
-}
+    .sub{
+      margin:0;
+      font-size:14px;
+      opacity:0.95;
+    }
 
-</style>
+    .content{
+      padding:24px;
+    }
 
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    input{
+      width:100%;
+      padding:13px 14px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      margin-bottom:16px;
+      font-size:15px;
+      outline:none;
+    }
+
+    input:focus{
+      border-color:#0f5f54;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:10px;
+      background:#ff7a00;
+      color:white;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    button:hover{
+      opacity:0.95;
+    }
+
+    .msg{
+      margin-top:16px;
+      font-size:14px;
+      text-align:center;
+      min-height:20px;
+    }
+
+    .ok{
+      color:#0f5f54;
+      font-weight:700;
+    }
+
+    .err{
+      color:#b91c1c;
+      font-weight:700;
+    }
+
+    .info{
+      margin-top:18px;
+      text-align:center;
+      font-size:13px;
+      color:#6b7280;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .panel{
+      min-height:100vh;
+      background:#eef2f4;
+    }
+
+    .header{
+      background:#0f5f54;
+      color:white;
+      padding:18px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .header-title{
+      font-size:28px;
+      font-weight:700;
+    }
+
+    .header-right{
+      font-size:14px;
+    }
+
+    .main{
+      padding:24px;
+    }
+
+    .menu{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .menu-btn{
+      background:white;
+      color:#0f5f54;
+      border:1px solid #d7dcdf;
+      padding:10px 16px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:default;
+      width:auto;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:18px;
+    }
+
+    .customer-card{
+      background:white;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .customer-name{
+      font-size:20px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    .customer-balance{
+      font-size:16px;
+      margin-bottom:16px;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .sale{
+      background:#ff7a00;
+      color:white;
+      width:auto;
+      padding:10px 14px;
+      font-size:14px;
+    }
+
+    .pay{
+      background:#0f5f54;
+      color:white;
+      width:auto;
+      padding:10px 14px;
+      font-size:14px;
+    }
+
+    .logout{
+      background:#ffffff;
+      color:#0f5f54;
+      width:auto;
+      padding:10px 14px;
+      font-size:14px;
+    }
+
+    .empty{
+      background:white;
+      padding:18px;
+      border-radius:14px;
+      color:#6b7280;
+      box-shadow:0 8px 20px rgba(0,0,0,0.06);
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="login-box">
+  <div id="loginScreen" class="app">
+    <div class="login-card">
+      <div class="top">
+        <h1 class="brand">DML VERESİYE9</h1>
+        <p class="sub">Lisanslı veresiye takip sistemi</p>
+      </div>
 
-<h1>DML VERESİYE9</h1>
+      <div class="content">
+        <label for="user">Kullanıcı Kodu</label>
+        <input id="user" type="text" placeholder="Örn: test" />
 
-<input id="user" placeholder="Kullanıcı Kodu">
+        <label for="pass">Şifre</label>
+        <input id="pass" type="password" placeholder="Şifre" />
 
-<input id="pass" type="password" placeholder="Şifre">
+        <button onclick="login()">Giriş Yap</button>
 
-<button onclick="login()">Giriş Yap</button>
+        <div id="msg" class="msg"></div>
 
-<p id="msg"></p>
+        <div class="info">
+          İletişim: 0 541 465 66 22
+        </div>
+      </div>
+    </div>
+  </div>
 
-</div>
+  <div id="panelScreen" class="panel hidden">
+    <div class="header">
+      <div class="header-title">DML VERESİYE9</div>
+      <div class="header-right">
+        Firma: <strong id="companyName">-</strong>
+      </div>
+      <button class="logout" onclick="logout()">Çıkış Yap</button>
+    </div>
 
-<script>
+    <div class="main">
+      <div class="menu">
+        <button class="menu-btn">Müşteriler</button>
+        <button class="menu-btn">Raporlar</button>
+        <button class="menu-btn">Kasa</button>
+        <button class="menu-btn">Ayarlar</button>
+      </div>
 
-async function login(){
+      <div id="cards" class="cards"></div>
+    </div>
+  </div>
 
-let user=document.getElementById("user").value
-let pass=document.getElementById("pass").value
+  <script>
+    const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
 
-let res=await fetch("https://YOURPROJECT.supabase.co/rest/v1/rpc/dml_login",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"apikey":"YOUR_ANON_KEY"
-},
-body:JSON.stringify({
-p_user_code:user,
-p_password:pass
-})
-})
+    async function login() {
+      const user = document.getElementById("user").value.trim();
+      const pass = document.getElementById("pass").value.trim();
+      const msg = document.getElementById("msg");
 
-let data=await res.json()
+      msg.className = "msg";
+      msg.innerText = "Giriş kontrol ediliyor...";
 
-if(data.length>0){
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/dml_login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+          },
+          body: JSON.stringify({
+            p_user_code: user,
+            p_password: pass
+          })
+        });
 
-document.getElementById("msg").innerText="Giriş başarılı"
+        const data = await res.json();
 
-}else{
+        if (Array.isArray(data) && data.length > 0) {
+          const tenant = data[0];
 
-document.getElementById("msg").innerText="Hatalı giriş"
+          localStorage.setItem("dml_user", JSON.stringify(tenant));
 
-}
+          msg.className = "msg ok";
+          msg.innerText = "Giriş başarılı";
 
-}
+          openPanel(tenant);
+        } else {
+          msg.className = "msg err";
+          msg.innerText = "Hatalı kullanıcı kodu veya şifre";
+        }
+      } catch (error) {
+        msg.className = "msg err";
+        msg.innerText = "Bağlantı hatası oluştu";
+      }
+    }
 
-</script>
+    function openPanel(tenant) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("panelScreen").classList.remove("hidden");
+      document.getElementById("companyName").innerText = tenant.company_name || "-";
+
+      const cards = document.getElementById("cards");
+      cards.innerHTML = `
+        <div class="customer-card">
+          <div class="customer-name">Ahmet Market Cari</div>
+          <div class="customer-balance">Borç: 4.250 ₺</div>
+          <div class="actions">
+            <button class="sale">Satış Yap</button>
+            <button class="pay">Tahsilat Yap</button>
+          </div>
+        </div>
+
+        <div class="customer-card">
+          <div class="customer-name">Mehmet Büfe Cari</div>
+          <div class="customer-balance">Borç: 980 ₺</div>
+          <div class="actions">
+            <button class="sale">Satış Yap</button>
+            <button class="pay">Tahsilat Yap</button>
+          </div>
+        </div>
+
+        <div class="empty">
+          Giriş sistemi bağlandı. Bir sonraki adımda gerçek müşteri kayıtlarını Supabase'ten çekeceğiz.
+        </div>
+      `;
+    }
+
+    function logout() {
+      localStorage.removeItem("dml_user");
+      document.getElementById("panelScreen").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("msg").innerText = "";
+      document.getElementById("user").value = "";
+      document.getElementById("pass").value = "";
+    }
+
+    window.onload = function() {
+      const savedUser = localStorage.getItem("dml_user");
+      if (savedUser) {
+        try {
+          const tenant = JSON.parse(savedUser);
+          openPanel(tenant);
+        } catch (e) {
+          localStorage.removeItem("dml_user");
+        }
+      }
+    };
+  </script>
 
 </body>
 </html>
