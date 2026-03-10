@@ -7,9 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -18,9 +16,7 @@
       color: #1f2937;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     .app {
       min-height: 100vh;
@@ -31,13 +27,14 @@
       background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
     }
 
-    .brand-row {
+    .brand-row, .header-left {
       display: flex;
       align-items: center;
       gap: 14px;
+      flex-wrap: wrap;
     }
 
-    .brand-logo {
+    .brand-logo, .header-logo {
       width: 52px;
       height: 52px;
       border-radius: 14px;
@@ -46,6 +43,12 @@
       border: 1px solid rgba(255,255,255,0.18);
       padding: 4px;
       flex-shrink: 0;
+    }
+
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
     }
 
     .login-card {
@@ -58,11 +61,12 @@
       border: 1px solid #e5e7eb;
     }
 
-    .top {
-      background: linear-gradient(135deg, #0f5f54 0%, #146c60 100%);
+    .top, .header, .modal-head, .detail-head {
+      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
       color: white;
-      padding: 30px 24px 24px 24px;
     }
+
+    .top { padding: 30px 24px 24px 24px; }
 
     .brand {
       font-size: 31px;
@@ -77,9 +81,7 @@
       opacity: 0.95;
     }
 
-    .content {
-      padding: 24px;
-    }
+    .content { padding: 24px; }
 
     label {
       display: block;
@@ -89,7 +91,7 @@
       color: #374151;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 14px 14px;
       border: 1px solid #d1d5db;
@@ -100,7 +102,7 @@
       background: #fff;
     }
 
-    input:focus {
+    input:focus, select:focus {
       border-color: #0f5f54;
       box-shadow: 0 0 0 3px rgba(15, 95, 84, 0.12);
     }
@@ -112,15 +114,59 @@
       transition: 0.2s ease;
     }
 
+    .login-btn,
+    .refresh-btn,
+    .report-btn {
+      background: #ff7a00;
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
+    }
+
     .login-btn {
       width: 100%;
       padding: 14px;
       border-radius: 12px;
-      background: #ff7a00;
-      color: white;
       font-size: 16px;
       font-weight: 700;
-      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
+    }
+
+    .save-btn,
+    .pay,
+    .close-btn {
+      background: #0f5f54;
+      color: white;
+      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+    }
+
+    .sale,
+    .action-btn {
+      background: #ff7a00;
+      color: white;
+      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
+    }
+
+    .secondary-btn,
+    .detail-btn,
+    .edit-btn {
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+    }
+
+    .danger-btn,
+    .delete-btn {
+      background: #b91c1c;
+      color: white;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
+    }
+
+    .logout {
+      background: white;
+      color: #0f5f54;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
     }
 
     .login-btn:hover,
@@ -149,15 +195,8 @@
       min-height: 20px;
     }
 
-    .ok {
-      color: #0f5f54;
-      font-weight: 700;
-    }
-
-    .err {
-      color: #b91c1c;
-      font-weight: 700;
-    }
+    .ok { color: #0f5f54; font-weight: 700; }
+    .err { color: #b91c1c; font-weight: 700; }
 
     .info {
       margin-top: 18px;
@@ -172,8 +211,6 @@
     }
 
     .header {
-      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
-      color: white;
       padding: 18px 24px;
       display: flex;
       align-items: center;
@@ -181,24 +218,6 @@
       gap: 12px;
       flex-wrap: wrap;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .header-logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      object-fit: cover;
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.18);
-      padding: 4px;
-      flex-shrink: 0;
     }
 
     .header-title {
@@ -214,18 +233,7 @@
       border-radius: 10px;
     }
 
-    .logout {
-      background: white;
-      color: #0f5f54;
-      padding: 10px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      border-radius: 10px;
-    }
-
-    .main {
-      padding: 24px;
-    }
+    .main { padding: 24px; }
 
     .top-actions {
       display: flex;
@@ -267,38 +275,15 @@
       flex-wrap: wrap;
     }
 
-    .refresh-btn,
-    .report-btn {
-      background: #ff7a00;
-      color: white;
+    .refresh-btn, .report-btn {
       padding: 11px 18px;
       border-radius: 12px;
       font-weight: 700;
-      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
-    }
-
-    .secondary-btn {
-      background: #eef6f4;
-      color: #0f5f54;
-      border: 1px solid #d8e8e3;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .danger-btn {
-      background: #b91c1c;
-      color: white;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
     }
 
     .form-box,
-    .report-box {
+    .report-box,
+    .cash-box {
       background: #ffffff;
       border: 1px solid #e5e7eb;
       border-radius: 18px;
@@ -308,7 +293,8 @@
     }
 
     .form-title,
-    .report-title {
+    .report-title,
+    .cash-title {
       font-size: 18px;
       font-weight: 700;
       color: #0f5f54;
@@ -322,7 +308,8 @@
       align-items: end;
     }
 
-    .report-filter-grid {
+    .report-filter-grid,
+    .cash-filter-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
@@ -330,13 +317,10 @@
     }
 
     .save-btn {
-      background: #0f5f54;
-      color: white;
       padding: 14px 16px;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 700;
-      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
       height: 48px;
     }
 
@@ -355,19 +339,14 @@
       align-items: start;
     }
 
-    .customer-card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      width: 240px;
-      min-height: 270px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .customer-card,
+    .summary-card {
       position: relative;
       overflow: hidden;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
     }
 
     .customer-card::before,
@@ -379,6 +358,15 @@
       width: 100%;
       height: 6px;
       background: linear-gradient(90deg, #0f5f54 0%, #ff7a00 100%);
+    }
+
+    .customer-card {
+      padding: 20px;
+      width: 240px;
+      min-height: 270px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .card-top {
@@ -409,9 +397,6 @@
     .detail-btn {
       margin-top: 12px;
       width: 100%;
-      background: #eef6f4;
-      color: #0f5f54;
-      border: 1px solid #d8e8e3;
       padding: 10px 12px;
       font-size: 14px;
       font-weight: 700;
@@ -425,26 +410,13 @@
       margin-top: 18px;
     }
 
-    .sale {
-      background: #ff7a00;
-      color: white;
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: 12px;
-      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
-    }
-
+    .sale,
     .pay {
-      background: #0f5f54;
-      color: white;
       width: 100%;
       padding: 12px 14px;
       font-size: 15px;
       font-weight: 700;
       border-radius: 12px;
-      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
     }
 
     .empty {
@@ -469,13 +441,7 @@
     }
 
     .summary-card {
-      position: relative;
-      overflow: hidden;
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
       padding: 20px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
       min-height: 130px;
     }
 
@@ -530,14 +496,26 @@
       font-size: 13px;
     }
 
-    .report-pill.sale {
+    .report-pill.sale,
+    .history-type.sale {
       background: #fff1e6;
       color: #ff7a00;
     }
 
-    .report-pill.payment {
+    .report-pill.payment,
+    .history-type.payment {
       background: #eaf7f3;
       color: #0f5f54;
+    }
+
+    .report-pill.cash_in {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .report-pill.cash_out {
+      background: #fff1f2;
+      color: #b91c1c;
     }
 
     .modal-backdrop {
@@ -562,16 +540,12 @@
     }
 
     .modal-head {
-      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
-      color: white;
       padding: 18px 20px;
       font-size: 20px;
       font-weight: 700;
     }
 
-    .modal-body {
-      padding: 20px;
-    }
+    .modal-body { padding: 20px; }
 
     .modal-text {
       margin: 0 0 14px 0;
@@ -586,26 +560,13 @@
       flex-wrap: wrap;
     }
 
-    .action-btn {
-      flex: 1;
-      background: #ff7a00;
-      color: white;
-      padding: 13px 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
-    }
-
+    .action-btn,
     .close-btn {
       flex: 1;
-      background: #0f5f54;
-      color: white;
       padding: 13px 14px;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 700;
-      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
     }
 
     .detail-modal {
@@ -619,8 +580,6 @@
     }
 
     .detail-head {
-      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
-      color: white;
       padding: 18px 20px;
       display: flex;
       justify-content: space-between;
@@ -656,6 +615,16 @@
       margin-bottom: 16px;
     }
 
+    .secondary-btn,
+    .danger-btn,
+    .edit-btn,
+    .delete-btn {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
     .history-list {
       display: flex;
       flex-direction: column;
@@ -687,18 +656,6 @@
       display: inline-block;
     }
 
-    .history-type.sale {
-      background: #fff1e6;
-      color: #ff7a00;
-      box-shadow: none;
-    }
-
-    .history-type.payment {
-      background: #eaf7f3;
-      color: #0f5f54;
-      box-shadow: none;
-    }
-
     .history-amount {
       font-weight: 800;
       font-size: 16px;
@@ -725,26 +682,6 @@
       flex-wrap: wrap;
     }
 
-    .edit-btn {
-      background: #eef6f4;
-      color: #0f5f54;
-      border: 1px solid #d8e8e3;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .delete-btn {
-      background: #fff1f2;
-      color: #b91c1c;
-      border: 1px solid #fecdd3;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
     .detail-empty {
       background: white;
       border-radius: 16px;
@@ -754,53 +691,42 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
-    .print-area-title {
-      display: none;
-    }
+    .print-area-title { display: none; }
 
-    body.print-report .panel > * {
-      display: none !important;
-    }
-
+    body.print-report .panel > * { display: none !important; }
     body.print-report #reportsView,
     body.print-report #reportsView * {
       display: block !important;
       visibility: visible !important;
     }
 
-    body.print-report #reportsView .report-table {
-      display: table !important;
-      width: 100%;
-    }
-
-    body.print-report #reportsView .report-table thead {
-      display: table-header-group !important;
-    }
-
-    body.print-report #reportsView .report-table tbody {
-      display: table-row-group !important;
-    }
-
-    body.print-report #reportsView .report-table tr {
-      display: table-row !important;
-    }
-
+    body.print-report #reportsView .report-table { display: table !important; width: 100%; }
+    body.print-report #reportsView .report-table thead { display: table-header-group !important; }
+    body.print-report #reportsView .report-table tbody { display: table-row-group !important; }
+    body.print-report #reportsView .report-table tr { display: table-row !important; }
     body.print-report #reportsView .report-table th,
-    body.print-report #reportsView .report-table td {
-      display: table-cell !important;
+    body.print-report #reportsView .report-table td { display: table-cell !important; }
+
+    body.print-cash .panel > * { display: none !important; }
+    body.print-cash #cashView,
+    body.print-cash #cashView * {
+      display: block !important;
+      visibility: visible !important;
     }
+
+    body.print-cash #cashView .report-table { display: table !important; width: 100%; }
+    body.print-cash #cashView .report-table thead { display: table-header-group !important; }
+    body.print-cash #cashView .report-table tbody { display: table-row-group !important; }
+    body.print-cash #cashView .report-table tr { display: table-row !important; }
+    body.print-cash #cashView .report-table th,
+    body.print-cash #cashView .report-table td { display: table-cell !important; }
 
     @media print {
-      body:not(.print-report) * {
-        visibility: hidden;
-      }
+      body:not(.print-report):not(.print-cash) * { visibility: hidden; }
+      body:not(.print-report):not(.print-cash) #printArea,
+      body:not(.print-report):not(.print-cash) #printArea * { visibility: visible; }
 
-      body:not(.print-report) #printArea,
-      body:not(.print-report) #printArea * {
-        visibility: visible;
-      }
-
-      body:not(.print-report) #printArea {
+      body:not(.print-report):not(.print-cash) #printArea {
         position: absolute;
         left: 0;
         top: 0;
@@ -810,22 +736,24 @@
         padding: 24px;
       }
 
-      body:not(.print-report) .detail-tools,
-      body:not(.print-report) .history-actions,
-      body:not(.print-report) .logout {
+      body:not(.print-report):not(.print-cash) .detail-tools,
+      body:not(.print-report):not(.print-cash) .history-actions,
+      body:not(.print-report):not(.print-cash) .logout {
         display: none !important;
       }
 
-      body:not(.print-report) .print-area-title {
+      body:not(.print-report):not(.print-cash) .print-area-title {
         display: block;
         margin-bottom: 18px;
       }
 
-      body.print-report {
+      body.print-report,
+      body.print-cash {
         background: white !important;
       }
 
-      body.print-report .main {
+      body.print-report .main,
+      body.print-cash .main {
         padding: 0 !important;
       }
 
@@ -833,36 +761,36 @@
       body.print-report .form-box,
       body.print-report #statusBar,
       body.print-report .report-box .report-filter-grid,
-      body.print-report .report-box .detail-tools {
+      body.print-report .report-box .detail-tools,
+      body.print-cash .top-actions,
+      body.print-cash .cash-box .cash-filter-grid,
+      body.print-cash .cash-box .detail-tools {
         display: none !important;
       }
 
-      body.print-report #reportsView {
+      body.print-report #reportsView,
+      body.print-cash #cashView {
         padding: 24px !important;
         background: white !important;
       }
 
       body.print-report .report-box,
       body.print-report .summary-card,
-      body.print-report .report-table-wrap {
+      body.print-report .report-table-wrap,
+      body.print-cash .cash-box,
+      body.print-cash .summary-card,
+      body.print-cash .report-table-wrap {
         box-shadow: none !important;
         border: 1px solid #ddd !important;
       }
     }
 
     @media (max-width: 700px) {
-      .header {
-        align-items: flex-start;
-      }
-
-      .header-title {
-        font-size: 24px;
-      }
-
+      .header { align-items: flex-start; }
+      .header-title { font-size: 24px; }
       .form-grid,
-      .report-filter-grid {
-        grid-template-columns: 1fr;
-      }
+      .report-filter-grid,
+      .cash-filter-grid { grid-template-columns: 1fr; }
 
       .cards {
         grid-template-columns: repeat(auto-fill, minmax(220px, 220px));
@@ -870,21 +798,11 @@
       }
 
       .customer-card,
-      .empty {
-        width: 220px;
-      }
+      .empty { width: 220px; }
 
-      .modal-actions {
-        flex-direction: column;
-      }
-
-      .detail-head {
-        align-items: flex-start;
-      }
-
-      .report-table-wrap {
-        overflow-x: auto;
-      }
+      .modal-actions { flex-direction: column; }
+      .detail-head { align-items: flex-start; }
+      .report-table-wrap { overflow-x: auto; }
     }
   </style>
 </head>
@@ -937,12 +855,12 @@
         <div class="menu">
           <button id="menuCustomers" class="menu-btn-link active" onclick="showCustomersView()">Müşteriler</button>
           <button id="menuReports" class="menu-btn-link" onclick="showReportsView()">Raporlar</button>
-          <button class="menu-btn">Kasa</button>
+          <button id="menuCash" class="menu-btn-link" onclick="showCashView()">Kasa</button>
           <button class="menu-btn">Ayarlar</button>
         </div>
 
         <div class="right-tools">
-          <button class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
+          <button id="globalRefreshBtn" class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
         </div>
       </div>
 
@@ -1024,6 +942,93 @@
           </table>
         </div>
       </div>
+
+      <div id="cashView" class="hidden">
+        <div class="cash-box">
+          <div class="cash-title">Kasa Hareketi Ekle</div>
+          <div class="cash-filter-grid">
+            <div>
+              <label for="cashType">İşlem Türü</label>
+              <select id="cashType">
+                <option value="cash_in">Kasa Giriş</option>
+                <option value="cash_out">Kasa Çıkış</option>
+              </select>
+            </div>
+            <div>
+              <label for="cashAmount">Tutar</label>
+              <input id="cashAmount" type="number" step="0.01" min="0" placeholder="Örn: 500" />
+            </div>
+            <div>
+              <label for="cashDescription">Açıklama</label>
+              <input id="cashDescription" type="text" placeholder="Örn: Gün sonu nakit" />
+            </div>
+            <div>
+              <button class="save-btn" onclick="addCashTransaction()">Kasaya Kaydet</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cash-box">
+          <div class="cash-title">Kasa Filtreleri</div>
+          <div class="cash-filter-grid">
+            <div>
+              <label for="cashStartDate">Başlangıç Tarihi</label>
+              <input id="cashStartDate" type="date" />
+            </div>
+            <div>
+              <label for="cashEndDate">Bitiş Tarihi</label>
+              <input id="cashEndDate" type="date" />
+            </div>
+            <div>
+              <button class="report-btn" onclick="loadCash()">Kasayı Getir</button>
+            </div>
+            <div class="detail-tools" style="margin:0;">
+              <button class="secondary-btn" onclick="printCash()">Yazdır</button>
+              <button class="secondary-btn" onclick="downloadCashPdf()">PDF Aktar</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="cashStatusBar" class="status-bar"></div>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Toplam Kasa Giriş</div>
+            <div id="cashSummaryIn" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Kasa Çıkış</div>
+            <div id="cashSummaryOut" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Kasa Bakiye</div>
+            <div id="cashSummaryBalance" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Hareket</div>
+            <div id="cashSummaryCount" class="summary-value">0</div>
+          </div>
+        </div>
+
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>İşlem Türü</th>
+                <th>Tutar</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody id="cashTableBody">
+              <tr>
+                <td colspan="4">Kasa henüz yüklenmedi.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1100,32 +1105,31 @@
     const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
 
-    let activeTransaction = {
-      customerId: null,
-      customerName: "",
-      tenantId: null,
-      type: null
-    };
+    let activeTransaction = { customerId: null, customerName: "", tenantId: null, type: null };
+    let activeDetail = { customerId: null, customerName: "", balance: 0 };
+    let editingTransaction = { id: null, customerId: null, customerName: "", type: null, oldAmount: 0 };
+    let reportsCache = { customers: [], transactions: [], customerMap: {} };
+    let cashCache = [];
 
-    let activeDetail = {
-      customerId: null,
-      customerName: "",
-      balance: 0
-    };
+    function getHeaders(extra = {}) {
+      return {
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        "Content-Type": "application/json",
+        ...extra
+      };
+    }
 
-    let editingTransaction = {
-      id: null,
-      customerId: null,
-      customerName: "",
-      type: null,
-      oldAmount: 0
-    };
-
-    let reportsCache = {
-      customers: [],
-      transactions: [],
-      customerMap: {}
-    };
+    function getSavedTenant() {
+      const savedUser = localStorage.getItem("dml_user");
+      if (!savedUser) return null;
+      try {
+        return JSON.parse(savedUser);
+      } catch {
+        localStorage.removeItem("dml_user");
+        return null;
+      }
+    }
 
     async function login() {
       const user = document.getElementById("user").value.trim();
@@ -1138,15 +1142,8 @@
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/dml_login`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
-          },
-          body: JSON.stringify({
-            p_user_code: user,
-            p_password: pass
-          })
+          headers: getHeaders(),
+          body: JSON.stringify({ p_user_code: user, p_password: pass })
         });
 
         const data = await res.json();
@@ -1167,63 +1164,59 @@
       }
     }
 
-    function getSavedTenant() {
-      const savedUser = localStorage.getItem("dml_user");
-      if (!savedUser) return null;
-      try {
-        return JSON.parse(savedUser);
-      } catch {
-        localStorage.removeItem("dml_user");
-        return null;
-      }
-    }
-
     function showCustomersView() {
       document.getElementById("customersView").classList.remove("hidden");
       document.getElementById("reportsView").classList.add("hidden");
+      document.getElementById("cashView").classList.add("hidden");
+
       document.getElementById("menuCustomers").classList.add("active");
       document.getElementById("menuReports").classList.remove("active");
-      document.querySelector(".refresh-btn").classList.remove("hidden");
-      document.body.classList.remove("print-report");
+      document.getElementById("menuCash").classList.remove("active");
+
+      document.getElementById("globalRefreshBtn").classList.remove("hidden");
+      document.body.classList.remove("print-report", "print-cash");
     }
 
     function showReportsView() {
       document.getElementById("customersView").classList.add("hidden");
       document.getElementById("reportsView").classList.remove("hidden");
+      document.getElementById("cashView").classList.add("hidden");
+
       document.getElementById("menuCustomers").classList.remove("active");
       document.getElementById("menuReports").classList.add("active");
-      document.querySelector(".refresh-btn").classList.add("hidden");
+      document.getElementById("menuCash").classList.remove("active");
+
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
       loadReports();
+    }
+
+    function showCashView() {
+      document.getElementById("customersView").classList.add("hidden");
+      document.getElementById("reportsView").classList.add("hidden");
+      document.getElementById("cashView").classList.remove("hidden");
+
+      document.getElementById("menuCustomers").classList.remove("active");
+      document.getElementById("menuReports").classList.remove("active");
+      document.getElementById("menuCash").classList.add("active");
+
+      document.getElementById("globalRefreshBtn").classList.add("hidden");
+      loadCash();
     }
 
     async function fetchCustomers(tenantId) {
       const statusBar = document.getElementById("statusBar");
       const cards = document.getElementById("cards");
-
       statusBar.innerText = "Müşteriler yükleniyor...";
       cards.innerHTML = "";
 
       try {
         const url = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenantId}&select=id,full_name,balance&order=created_at.desc`;
-
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
-        });
-
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
         const data = await res.json();
 
         if (!Array.isArray(data) || data.length === 0) {
           statusBar.innerText = "Müşteri bulunamadı.";
-          cards.innerHTML = `
-            <div class="empty">
-              Bu firmaya ait müşteri bulunamadı. Yukarıdan yeni müşteri ekleyebilirsin.
-            </div>
-          `;
+          cards.innerHTML = `<div class="empty">Bu firmaya ait müşteri bulunamadı. Yukarıdan yeni müşteri ekleyebilirsin.</div>`;
           return;
         }
 
@@ -1242,14 +1235,9 @@
             </div>
           </div>
         `).join("");
-
-      } catch (error) {
+      } catch {
         statusBar.innerText = "Müşteriler yüklenirken hata oluştu.";
-        cards.innerHTML = `
-          <div class="empty">
-            Supabase bağlantısı var ama müşteri listesi okunamadı.
-          </div>
-        `;
+        cards.innerHTML = `<div class="empty">Supabase bağlantısı var ama müşteri listesi okunamadı.</div>`;
       }
     }
 
@@ -1275,12 +1263,7 @@
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/customers`, {
           method: "POST",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
+          headers: getHeaders({ "Prefer": "return=representation" }),
           body: JSON.stringify({
             tenant_id: tenant.tenant_id,
             full_name: name,
@@ -1289,16 +1272,14 @@
         });
 
         if (!res.ok) {
-          const errorText = await res.text();
           statusBar.innerText = "Müşteri kaydedilemedi.";
-          console.error(errorText);
           return;
         }
 
         input.value = "";
         statusBar.innerText = "Müşteri başarıyla eklendi.";
         fetchCustomers(tenant.tenant_id);
-      } catch (error) {
+      } catch {
         statusBar.innerText = "Müşteri eklenirken bağlantı hatası oluştu.";
       }
     }
@@ -1307,13 +1288,7 @@
       const tenant = getSavedTenant();
       if (!tenant) return;
 
-      activeTransaction = {
-        customerId,
-        customerName,
-        tenantId: tenant.tenant_id,
-        type
-      };
-
+      activeTransaction = { customerId, customerName, tenantId: tenant.tenant_id, type };
       document.getElementById("modalCustomerName").innerText = customerName;
       document.getElementById("modalAmount").value = "";
       document.getElementById("modalDescription").value = "";
@@ -1331,124 +1306,83 @@
 
     function closeTransactionModal() {
       document.getElementById("transactionModal").classList.add("hidden");
-      activeTransaction = {
-        customerId: null,
-        customerName: "",
-        tenantId: null,
-        type: null
-      };
+      activeTransaction = { customerId: null, customerName: "", tenantId: null, type: null };
     }
 
     async function saveTransaction() {
-      const amountInput = document.getElementById("modalAmount");
-      const descriptionInput = document.getElementById("modalDescription");
+      const amount = Number(document.getElementById("modalAmount").value);
+      const description = document.getElementById("modalDescription").value.trim();
       const statusBar = document.getElementById("statusBar");
-
-      const amount = Number(amountInput.value);
-      const description = descriptionInput.value.trim();
 
       if (!activeTransaction.customerId || !activeTransaction.tenantId || !activeTransaction.type) {
         statusBar.innerText = "İşlem bilgisi eksik.";
-        closeTransactionModal();
         return;
       }
 
       if (!amount || amount <= 0) {
         statusBar.innerText = "Geçerli bir tutar gir.";
-        amountInput.focus();
         return;
       }
 
       const tenantId = activeTransaction.tenantId;
       const customerId = activeTransaction.customerId;
-      const transactionTypeForDb = activeTransaction.type === "sale" ? "sale" : "payment";
-      const transactionTypeForText = activeTransaction.type === "sale" ? "Satış" : "Tahsilat";
+      const txType = activeTransaction.type === "sale" ? "sale" : "payment";
+      const txText = activeTransaction.type === "sale" ? "Satış" : "Tahsilat";
 
       statusBar.innerText = "İşlem kaydediliyor...";
 
       try {
         const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions`, {
           method: "POST",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
+          headers: getHeaders({ "Prefer": "return=representation" }),
           body: JSON.stringify({
             tenant_id: tenantId,
             customer_id: customerId,
-            transaction_type: transactionTypeForDb,
+            transaction_type: txType,
             amount: amount,
-            description: description || (transactionTypeForDb === "sale" ? "Satış işlemi" : "Tahsilat işlemi")
+            description: description || (txType === "sale" ? "Satış işlemi" : "Tahsilat işlemi")
           })
         });
 
         if (!insertRes.ok) {
-          const errorText = await insertRes.text();
           statusBar.innerText = "İşlem kaydedilemedi.";
-          console.error(errorText);
           return;
         }
 
         const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}&select=id,balance`, {
           method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         const customerData = await balanceRes.json();
-        const currentBalance = Array.isArray(customerData) && customerData.length > 0
-          ? Number(customerData[0].balance || 0)
-          : 0;
-
-        const newBalance = activeTransaction.type === "sale"
-          ? currentBalance + amount
-          : currentBalance - amount;
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
+        const newBalance = activeTransaction.type === "sale" ? currentBalance + amount : currentBalance - amount;
 
         const updateRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customerId}`, {
           method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify({
-            balance: newBalance
-          })
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
         });
 
         if (!updateRes.ok) {
-          const errorText = await updateRes.text();
           statusBar.innerText = "Borç güncellenemedi.";
-          console.error(errorText);
           return;
         }
 
-        statusBar.innerText = `${transactionTypeForText} başarıyla kaydedildi.`;
+        statusBar.innerText = `${txText} başarıyla kaydedildi.`;
         closeTransactionModal();
         await fetchCustomers(tenantId);
 
         if (!document.getElementById("detailModalBackdrop").classList.contains("hidden") && activeDetail.customerId === customerId) {
           await openDetailModal(customerId, activeDetail.customerName, newBalance);
         }
-
-      } catch (error) {
+      } catch {
         statusBar.innerText = "İşlem sırasında bağlantı hatası oluştu.";
       }
     }
 
     async function openDetailModal(customerId, customerName, balance) {
-      activeDetail = {
-        customerId,
-        customerName,
-        balance
-      };
-
+      activeDetail = { customerId, customerName, balance };
       document.getElementById("detailCustomerName").innerText = customerName;
       document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
       document.getElementById("printCustomerName").innerText = customerName;
@@ -1458,24 +1392,11 @@
 
       try {
         const url = `${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${customerId}&select=id,transaction_type,amount,description,created_at&order=created_at.desc`;
-
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
-        });
-
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
         const data = await res.json();
 
         if (!Array.isArray(data) || data.length === 0) {
-          document.getElementById("detailHistoryList").innerHTML = `
-            <div class="detail-empty">
-              Bu müşteriye ait işlem geçmişi bulunamadı.
-            </div>
-          `;
+          document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">Bu müşteriye ait işlem geçmişi bulunamadı.</div>`;
           return;
         }
 
@@ -1495,27 +1416,18 @@
             </div>
           </div>
         `).join("");
-
-      } catch (error) {
-        document.getElementById("detailHistoryList").innerHTML = `
-          <div class="detail-empty">
-            İşlem geçmişi yüklenemedi.
-          </div>
-        `;
+      } catch {
+        document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yüklenemedi.</div>`;
       }
     }
 
     function closeDetailModal() {
       document.getElementById("detailModalBackdrop").classList.add("hidden");
-      activeDetail = {
-        customerId: null,
-        customerName: "",
-        balance: 0
-      };
+      activeDetail = { customerId: null, customerName: "", balance: 0 };
     }
 
     function printDetail() {
-      document.body.classList.remove("print-report");
+      document.body.classList.remove("print-report", "print-cash");
       window.print();
     }
 
@@ -1528,15 +1440,11 @@
 
       let y = 20;
       doc.setFontSize(18);
-      doc.text("DML VERESIYE9", 14, y);
-      y += 10;
+      doc.text("DML VERESIYE9", 14, y); y += 10;
       doc.setFontSize(14);
-      doc.text(detailName, 14, y);
-      y += 8;
-      doc.text(detailBalance, 14, y);
-      y += 8;
-      doc.text("Iletisim: 0 541 465 66 22", 14, y);
-      y += 12;
+      doc.text(detailName, 14, y); y += 8;
+      doc.text(detailBalance, 14, y); y += 8;
+      doc.text("Iletisim: 0 541 465 66 22", 14, y); y += 12;
 
       items.forEach((item, index) => {
         const type = item.querySelector(".history-type")?.innerText || "";
@@ -1544,19 +1452,13 @@
         const desc = item.querySelector(".history-desc")?.innerText || "";
         const date = item.querySelector(".history-date")?.innerText || "";
 
-        if (y > 260) {
-          doc.addPage();
-          y = 20;
-        }
+        if (y > 260) { doc.addPage(); y = 20; }
 
         doc.setFontSize(12);
-        doc.text(`${index + 1}. ${type} - ${amount}`, 14, y);
-        y += 7;
+        doc.text(`${index + 1}. ${type} - ${amount}`, 14, y); y += 7;
         doc.setFontSize(10);
-        doc.text(`Aciklama: ${desc}`.slice(0, 90), 14, y);
-        y += 6;
-        doc.text(`Tarih: ${date}`.slice(0, 90), 14, y);
-        y += 10;
+        doc.text(`Aciklama: ${desc}`.slice(0, 90), 14, y); y += 6;
+        doc.text(`Tarih: ${date}`.slice(0, 90), 14, y); y += 10;
       });
 
       doc.save(`${detailName.replaceAll(" ", "_")}_cari_detay.pdf`);
@@ -1570,46 +1472,33 @@
         return;
       }
 
-      const ok = confirm(`${activeDetail.customerName} müşterisini silmek istediğine emin misin?`);
-      if (!ok) return;
+      if (!confirm(`${activeDetail.customerName} müşterisini silmek istediğine emin misin?`)) return;
 
       statusBar.innerText = "Müşteri siliniyor...";
 
       try {
         await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${activeDetail.customerId}`, {
           method: "DELETE",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         const res = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
           method: "DELETE",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         if (!res.ok) {
-          const errorText = await res.text();
-          document.getElementById("statusBar").innerText = "Müşteri silinemedi.";
-          console.error(errorText);
+          statusBar.innerText = "Müşteri silinemedi.";
           return;
         }
 
-        document.getElementById("statusBar").innerText = "Müşteri başarıyla silindi.";
+        statusBar.innerText = "Müşteri başarıyla silindi.";
         closeDetailModal();
 
         const tenant = getSavedTenant();
-        if (tenant) {
-          fetchCustomers(tenant.tenant_id);
-        }
-      } catch (error) {
-        document.getElementById("statusBar").innerText = "Müşteri silinirken bağlantı hatası oluştu.";
+        if (tenant) fetchCustomers(tenant.tenant_id);
+      } catch {
+        statusBar.innerText = "Müşteri silinirken bağlantı hatası oluştu.";
       }
     }
 
@@ -1630,13 +1519,7 @@
 
     function closeEditTransactionModal() {
       document.getElementById("editTransactionModal").classList.add("hidden");
-      editingTransaction = {
-        id: null,
-        customerId: null,
-        customerName: "",
-        type: null,
-        oldAmount: 0
-      };
+      editingTransaction = { id: null, customerId: null, customerName: "", type: null, oldAmount: 0 };
     }
 
     async function saveEditedTransaction() {
@@ -1659,12 +1542,7 @@
       try {
         const updateTx = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${editingTransaction.id}`, {
           method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
+          headers: getHeaders({ "Prefer": "return=representation" }),
           body: JSON.stringify({
             amount: newAmount,
             description: newDescription || "Düzenlenmiş işlem"
@@ -1672,28 +1550,19 @@
         });
 
         if (!updateTx.ok) {
-          const errorText = await updateTx.text();
           statusBar.innerText = "İşlem düzenlenemedi.";
-          console.error(errorText);
           return;
         }
 
         const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}&select=id,balance`, {
           method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         const customerData = await balanceRes.json();
-        const currentBalance = Array.isArray(customerData) && customerData.length > 0
-          ? Number(customerData[0].balance || 0)
-          : 0;
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
 
         let newBalance = currentBalance;
-
         if (editingTransaction.type === "sale") {
           newBalance = currentBalance - editingTransaction.oldAmount + newAmount;
         } else {
@@ -1702,21 +1571,12 @@
 
         const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}`, {
           method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify({
-            balance: newBalance
-          })
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
         });
 
         if (!updateCustomer.ok) {
-          const errorText = await updateCustomer.text();
           statusBar.innerText = "Borç güncellenemedi.";
-          console.error(errorText);
           return;
         }
 
@@ -1724,90 +1584,60 @@
         closeEditTransactionModal();
 
         const tenant = getSavedTenant();
-        if (tenant) {
-          await fetchCustomers(tenant.tenant_id);
-        }
+        if (tenant) await fetchCustomers(tenant.tenant_id);
 
         await openDetailModal(editingTransaction.customerId, activeDetail.customerName, newBalance);
-
-      } catch (error) {
+      } catch {
         statusBar.innerText = "İşlem düzenlenirken bağlantı hatası oluştu.";
       }
     }
 
     async function deleteTransaction(transactionId, type, amount) {
       const statusBar = document.getElementById("statusBar");
-      const ok = confirm("Bu işlemi silmek istediğine emin misin?");
-      if (!ok) return;
+      if (!confirm("Bu işlemi silmek istediğine emin misin?")) return;
 
       statusBar.innerText = "İşlem siliniyor...";
 
       try {
         const deleteRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${transactionId}`, {
           method: "DELETE",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         if (!deleteRes.ok) {
-          const errorText = await deleteRes.text();
           statusBar.innerText = "İşlem silinemedi.";
-          console.error(errorText);
           return;
         }
 
         const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}&select=id,balance`, {
           method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
+          headers: getHeaders()
         });
 
         const customerData = await balanceRes.json();
-        const currentBalance = Array.isArray(customerData) && customerData.length > 0
-          ? Number(customerData[0].balance || 0)
-          : 0;
-
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0 ? Number(customerData[0].balance || 0) : 0;
         const amountNum = Number(amount || 0);
-        const newBalance = type === "sale"
-          ? currentBalance - amountNum
-          : currentBalance + amountNum;
+
+        const newBalance = type === "sale" ? currentBalance - amountNum : currentBalance + amountNum;
 
         const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
           method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify({
-            balance: newBalance
-          })
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({ balance: newBalance })
         });
 
         if (!updateCustomer.ok) {
-          const errorText = await updateCustomer.text();
           statusBar.innerText = "Borç güncellenemedi.";
-          console.error(errorText);
           return;
         }
 
         statusBar.innerText = "İşlem başarıyla silindi.";
 
         const tenant = getSavedTenant();
-        if (tenant) {
-          await fetchCustomers(tenant.tenant_id);
-        }
+        if (tenant) await fetchCustomers(tenant.tenant_id);
 
         await openDetailModal(activeDetail.customerId, activeDetail.customerName, newBalance);
-
-      } catch (error) {
+      } catch {
         statusBar.innerText = "İşlem silinirken bağlantı hatası oluştu.";
       }
     }
@@ -1824,40 +1654,19 @@
 
       try {
         const customerUrl = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenant.tenant_id}&select=id,full_name,balance&order=full_name.asc`;
-        const customersRes = await fetch(customerUrl, {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
-        });
-
+        const customersRes = await fetch(customerUrl, { method: "GET", headers: getHeaders() });
         const customers = await customersRes.json();
         const customerMap = {};
+
         if (Array.isArray(customers)) {
-          customers.forEach(c => {
-            customerMap[c.id] = c.full_name;
-          });
+          customers.forEach(c => { customerMap[c.id] = c.full_name; });
         }
 
         let txUrl = `${SUPABASE_URL}/rest/v1/customer_transactions?tenant_id=eq.${tenant.tenant_id}&select=id,customer_id,transaction_type,amount,description,created_at&order=created_at.desc`;
-        if (startDate) {
-          txUrl += `&created_at=gte.${startDate}T00:00:00`;
-        }
-        if (endDate) {
-          txUrl += `&created_at=lte.${endDate}T23:59:59`;
-        }
+        if (startDate) txUrl += `&created_at=gte.${startDate}T00:00:00`;
+        if (endDate) txUrl += `&created_at=lte.${endDate}T23:59:59`;
 
-        const txRes = await fetch(txUrl, {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_PUBLISHABLE_KEY,
-            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-            "Content-Type": "application/json"
-          }
-        });
-
+        const txRes = await fetch(txUrl, { method: "GET", headers: getHeaders() });
         const transactions = await txRes.json();
 
         reportsCache = {
@@ -1868,12 +1677,8 @@
 
         const totalCustomerCount = reportsCache.customers.length;
         const totalBalance = reportsCache.customers.reduce((sum, item) => sum + Number(item.balance || 0), 0);
-        const totalSales = reportsCache.transactions
-          .filter(item => item.transaction_type === "sale")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
-        const totalPayments = reportsCache.transactions
-          .filter(item => item.transaction_type === "payment")
-          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const totalSales = reportsCache.transactions.filter(item => item.transaction_type === "sale").reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const totalPayments = reportsCache.transactions.filter(item => item.transaction_type === "payment").reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
         document.getElementById("summaryCustomerCount").innerText = totalCustomerCount;
         document.getElementById("summaryTotalBalance").innerText = `${formatMoney(totalBalance)} ₺`;
@@ -1894,7 +1699,7 @@
             <td>${escapeHtml(item.description || "-")}</td>
           </tr>
         `).join("");
-      } catch (error) {
+      } catch {
         reportBody.innerHTML = `<tr><td colspan="5">Rapor yüklenirken hata oluştu.</td></tr>`;
       }
     }
@@ -1902,9 +1707,7 @@
     function printReports() {
       document.body.classList.add("print-report");
       window.print();
-      setTimeout(() => {
-        document.body.classList.remove("print-report");
-      }, 500);
+      setTimeout(() => document.body.classList.remove("print-report"), 500);
     }
 
     async function downloadReportsPdf() {
@@ -1913,17 +1716,12 @@
 
       let y = 20;
       doc.setFontSize(18);
-      doc.text("DML VERESIYE9 RAPORLAR", 14, y);
-      y += 10;
+      doc.text("DML VERESIYE9 RAPORLAR", 14, y); y += 10;
       doc.setFontSize(11);
-      doc.text(`Toplam Musteri: ${document.getElementById("summaryCustomerCount").innerText}`, 14, y);
-      y += 7;
-      doc.text(`Toplam Alacak: ${document.getElementById("summaryTotalBalance").innerText}`, 14, y);
-      y += 7;
-      doc.text(`Toplam Satis: ${document.getElementById("summaryTotalSales").innerText}`, 14, y);
-      y += 7;
-      doc.text(`Toplam Tahsilat: ${document.getElementById("summaryTotalPayments").innerText}`, 14, y);
-      y += 12;
+      doc.text(`Toplam Musteri: ${document.getElementById("summaryCustomerCount").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Alacak: ${document.getElementById("summaryTotalBalance").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Satis: ${document.getElementById("summaryTotalSales").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Tahsilat: ${document.getElementById("summaryTotalPayments").innerText}`, 14, y); y += 12;
 
       if (!reportsCache.transactions.length) {
         doc.text("Islem bulunamadi.", 14, y);
@@ -1937,10 +1735,7 @@
         const line3 = `Aciklama: ${(item.description || "-").slice(0, 70)}`;
         const line4 = `Tarih: ${formatDate(item.created_at)}`;
 
-        if (y > 255) {
-          doc.addPage();
-          y = 20;
-        }
+        if (y > 255) { doc.addPage(); y = 20; }
 
         doc.setFontSize(11);
         doc.text(line1, 14, y); y += 6;
@@ -1950,6 +1745,149 @@
       });
 
       doc.save("DML_VERESIYE9_Raporlar.pdf");
+    }
+
+    async function addCashTransaction() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("cashStatusBar");
+
+      if (!tenant) {
+        statusBar.innerText = "Önce giriş yapılmalı.";
+        return;
+      }
+
+      const type = document.getElementById("cashType").value;
+      const amount = Number(document.getElementById("cashAmount").value);
+      const description = document.getElementById("cashDescription").value.trim();
+
+      if (!amount || amount <= 0) {
+        statusBar.innerText = "Geçerli bir kasa tutarı gir.";
+        return;
+      }
+
+      statusBar.innerText = "Kasa hareketi kaydediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/cash_transactions`, {
+          method: "POST",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            tenant_id: tenant.tenant_id,
+            transaction_type: type,
+            amount: amount,
+            description: description || (type === "cash_in" ? "Kasa giriş işlemi" : "Kasa çıkış işlemi")
+          })
+        });
+
+        if (!res.ok) {
+          statusBar.innerText = "Kasa hareketi kaydedilemedi.";
+          return;
+        }
+
+        document.getElementById("cashAmount").value = "";
+        document.getElementById("cashDescription").value = "";
+        document.getElementById("cashType").value = "cash_in";
+
+        statusBar.innerText = "Kasa hareketi başarıyla kaydedildi.";
+        loadCash();
+      } catch {
+        statusBar.innerText = "Kasa kaydında bağlantı hatası oluştu.";
+      }
+    }
+
+    async function loadCash() {
+      const tenant = getSavedTenant();
+      const statusBar = document.getElementById("cashStatusBar");
+      const tbody = document.getElementById("cashTableBody");
+
+      if (!tenant) return;
+
+      const startDate = document.getElementById("cashStartDate").value;
+      const endDate = document.getElementById("cashEndDate").value;
+
+      statusBar.innerText = "Kasa hareketleri yükleniyor...";
+      tbody.innerHTML = `<tr><td colspan="4">Kasa yükleniyor...</td></tr>`;
+
+      try {
+        let url = `${SUPABASE_URL}/rest/v1/cash_transactions?tenant_id=eq.${tenant.tenant_id}&select=id,transaction_type,amount,description,created_at&order=created_at.desc`;
+        if (startDate) url += `&created_at=gte.${startDate}T00:00:00`;
+        if (endDate) url += `&created_at=lte.${endDate}T23:59:59`;
+
+        const res = await fetch(url, { method: "GET", headers: getHeaders() });
+        const data = await res.json();
+        cashCache = Array.isArray(data) ? data : [];
+
+        const totalIn = cashCache.filter(i => i.transaction_type === "cash_in").reduce((sum, i) => sum + Number(i.amount || 0), 0);
+        const totalOut = cashCache.filter(i => i.transaction_type === "cash_out").reduce((sum, i) => sum + Number(i.amount || 0), 0);
+        const balance = totalIn - totalOut;
+
+        document.getElementById("cashSummaryIn").innerText = `${formatMoney(totalIn)} ₺`;
+        document.getElementById("cashSummaryOut").innerText = `${formatMoney(totalOut)} ₺`;
+        document.getElementById("cashSummaryBalance").innerText = `${formatMoney(balance)} ₺`;
+        document.getElementById("cashSummaryCount").innerText = cashCache.length;
+
+        if (!cashCache.length) {
+          statusBar.innerText = "Kasa hareketi bulunamadı.";
+          tbody.innerHTML = `<tr><td colspan="4">Bu aralıkta kasa hareketi bulunamadı.</td></tr>`;
+          return;
+        }
+
+        statusBar.innerText = `${cashCache.length} kasa hareketi yüklendi.`;
+
+        tbody.innerHTML = cashCache.map(item => `
+          <tr>
+            <td>${formatDate(item.created_at)}</td>
+            <td><span class="report-pill ${item.transaction_type}">${item.transaction_type === "cash_in" ? "Kasa Giriş" : "Kasa Çıkış"}</span></td>
+            <td>${formatMoney(item.amount || 0)} ₺</td>
+            <td>${escapeHtml(item.description || "-")}</td>
+          </tr>
+        `).join("");
+      } catch {
+        statusBar.innerText = "Kasa hareketleri yüklenirken hata oluştu.";
+        tbody.innerHTML = `<tr><td colspan="4">Kasa verileri alınamadı.</td></tr>`;
+      }
+    }
+
+    function printCash() {
+      document.body.classList.add("print-cash");
+      window.print();
+      setTimeout(() => document.body.classList.remove("print-cash"), 500);
+    }
+
+    async function downloadCashPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9 KASA RAPORU", 14, y); y += 10;
+      doc.setFontSize(11);
+      doc.text(`Toplam Giris: ${document.getElementById("cashSummaryIn").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Cikis: ${document.getElementById("cashSummaryOut").innerText}`, 14, y); y += 7;
+      doc.text(`Kasa Bakiye: ${document.getElementById("cashSummaryBalance").innerText}`, 14, y); y += 7;
+      doc.text(`Toplam Hareket: ${document.getElementById("cashSummaryCount").innerText}`, 14, y); y += 12;
+
+      if (!cashCache.length) {
+        doc.text("Kasa hareketi bulunamadi.", 14, y);
+        doc.save("DML_VERESIYE9_Kasa_Raporu.pdf");
+        return;
+      }
+
+      cashCache.forEach((item, index) => {
+        const typeText = item.transaction_type === "cash_in" ? "Kasa Giris" : "Kasa Cikis";
+        const line1 = `${index + 1}. ${typeText} - ${formatMoney(item.amount || 0)} TL`;
+        const line2 = `Aciklama: ${(item.description || "-").slice(0, 70)}`;
+        const line3 = `Tarih: ${formatDate(item.created_at)}`;
+
+        if (y > 255) { doc.addPage(); y = 20; }
+
+        doc.setFontSize(11);
+        doc.text(line1, 14, y); y += 6;
+        doc.text(line2, 14, y); y += 6;
+        doc.text(line3, 14, y); y += 10;
+      });
+
+      doc.save("DML_VERESIYE9_Kasa_Raporu.pdf");
     }
 
     function openPanel(tenant) {
@@ -1976,22 +1914,12 @@
       document.getElementById("newCustomerName").value = "";
       document.getElementById("cards").innerHTML = "";
       document.getElementById("statusBar").innerText = "";
+      document.getElementById("cashStatusBar").innerText = "";
       closeTransactionModal();
       closeDetailModal();
       closeEditTransactionModal();
-      document.body.classList.remove("print-report");
+      document.body.classList.remove("print-report", "print-cash");
       showCustomersView();
-    }
-
-    function closeEditTransactionModal() {
-      document.getElementById("editTransactionModal").classList.add("hidden");
-      editingTransaction = {
-        id: null,
-        customerId: null,
-        customerName: "",
-        type: null,
-        oldAmount: 0
-      };
     }
 
     function formatMoney(value) {
@@ -2025,9 +1953,7 @@
 
     window.onload = function () {
       const tenant = getSavedTenant();
-      if (tenant) {
-        openPanel(tenant);
-      }
+      if (tenant) openPanel(tenant);
     };
   </script>
 </body>
