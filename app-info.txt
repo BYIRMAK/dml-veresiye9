@@ -1,0 +1,15 @@
+DML VERESİYE9
+
+Modüller:
+- Giriş ekranı
+- Müşteri kart ekranı
+- Satış yap
+- Tahsilat yap
+- Cari detay
+- Raporlar
+- Kasa
+- Ayarlar
+- Lisans yönetim paneli
+
+İletişim:
+0 541 465 66 22
