@@ -30,6 +30,23 @@
       background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
     }
 
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
     .login-card {
       width: 100%;
       max-width: 420px;
@@ -115,7 +132,9 @@
     .close-btn:hover,
     .detail-btn:hover,
     .secondary-btn:hover,
-    .danger-btn:hover {
+    .danger-btn:hover,
+    .edit-btn:hover,
+    .delete-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -159,6 +178,24 @@
       gap: 12px;
       flex-wrap: wrap;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px;
+      flex-shrink: 0;
     }
 
     .header-title {
@@ -474,7 +511,7 @@
 
     .detail-modal {
       width: 100%;
-      max-width: 760px;
+      max-width: 860px;
       background: white;
       border-radius: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
@@ -508,7 +545,7 @@
 
     .detail-body {
       padding: 20px;
-      max-height: 70vh;
+      max-height: 75vh;
       overflow-y: auto;
       background: #f8fafb;
     }
@@ -580,6 +617,33 @@
       color: #6b7280;
       font-size: 13px;
       font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .edit-btn {
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .delete-btn {
+      background: #fff1f2;
+      color: #b91c1c;
+      border: 1px solid #fecdd3;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .detail-empty {
@@ -589,6 +653,10 @@
       border: 1px solid #e5e7eb;
       color: #6b7280;
       box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .print-area-title {
+      display: none;
     }
 
     @media print {
@@ -608,6 +676,17 @@
         background: white;
         color: black;
         padding: 24px;
+      }
+
+      .detail-tools,
+      .history-actions,
+      .logout {
+        display: none !important;
+      }
+
+      .print-area-title {
+        display: block;
+        margin-bottom: 18px;
       }
     }
 
@@ -649,8 +728,13 @@
   <div id="loginScreen" class="app">
     <div class="login-card">
       <div class="top">
-        <h1 class="brand">DML VERESİYE9</h1>
-        <p class="sub">Lisanslı veresiye takip sistemi</p>
+        <div class="brand-row">
+          <img src="logo.png" alt="DML Logo" class="brand-logo" onerror="this.style.display='none'">
+          <div>
+            <h1 class="brand">DML VERESİYE9</h1>
+            <p class="sub">Lisanslı veresiye takip sistemi</p>
+          </div>
+        </div>
       </div>
 
       <div class="content">
@@ -673,7 +757,10 @@
 
   <div id="panelScreen" class="panel hidden">
     <div class="header">
-      <div class="header-title">DML VERESİYE9</div>
+      <div class="header-left">
+        <img src="logo.png" alt="DML Logo" class="header-logo" onerror="this.style.display='none'">
+        <div class="header-title">DML VERESİYE9</div>
+      </div>
       <div class="header-right">
         Firma: <strong id="companyName">-</strong>
       </div>
@@ -734,6 +821,28 @@
     </div>
   </div>
 
+  <div id="editTransactionModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">İşlem Düzenle</div>
+      <div class="modal-body">
+        <p class="modal-text">
+          Müşteri: <strong id="editCustomerName">-</strong>
+        </p>
+
+        <label for="editTransactionAmount">Tutar</label>
+        <input id="editTransactionAmount" type="number" step="0.01" min="0" placeholder="Örn: 1500" />
+
+        <label for="editTransactionDescription">Açıklama</label>
+        <input id="editTransactionDescription" type="text" placeholder="Açıklama" />
+
+        <div class="modal-actions">
+          <button class="action-btn" onclick="saveEditedTransaction()">Düzenlemeyi Kaydet</button>
+          <button class="close-btn" onclick="closeEditTransactionModal()">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="detailModalBackdrop" class="modal-backdrop hidden">
     <div class="detail-modal">
       <div class="detail-head">
@@ -742,6 +851,13 @@
         <button class="logout" onclick="closeDetailModal()">Kapat</button>
       </div>
       <div class="detail-body" id="printArea">
+        <div class="print-area-title">
+          <h2 id="printCustomerName">Cari Detay</h2>
+          <p id="printCustomerBalance">Borç: 0 ₺</p>
+          <p>İletişim: 0 541 465 66 22</p>
+          <hr>
+        </div>
+
         <div class="detail-tools">
           <button class="secondary-btn" onclick="printDetail()">Yazdır</button>
           <button class="secondary-btn" onclick="downloadDetailPdf()">PDF Aktar</button>
@@ -767,6 +883,14 @@
       customerId: null,
       customerName: "",
       balance: 0
+    };
+
+    let editingTransaction = {
+      id: null,
+      customerId: null,
+      customerName: "",
+      type: null,
+      oldAmount: 0
     };
 
     async function login() {
@@ -1081,6 +1205,8 @@
 
       document.getElementById("detailCustomerName").innerText = customerName;
       document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
+      document.getElementById("printCustomerName").innerText = customerName;
+      document.getElementById("printCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
       document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yükleniyor...</div>`;
       document.getElementById("detailModalBackdrop").classList.remove("hidden");
 
@@ -1117,6 +1243,10 @@
             </div>
             <div class="history-desc">${escapeHtml(item.description || 'Açıklama yok')}</div>
             <div class="history-date">${formatDate(item.created_at)}</div>
+            <div class="history-actions">
+              <button class="edit-btn" onclick="openEditTransactionModal('${item.id}', '${item.transaction_type}', ${Number(item.amount || 0)}, '${escapeJs(item.description || "")}')">Düzenle</button>
+              <button class="delete-btn" onclick="deleteTransaction('${item.id}', '${item.transaction_type}', ${Number(item.amount || 0)})">İşlemi Sil</button>
+            </div>
           </div>
         `).join("");
 
@@ -1151,6 +1281,7 @@
 DML VERESİYE9
 ${detailName}
 ${detailBalance}
+İletişim: 0 541 465 66 22
 
 İŞLEM GEÇMİŞİ
 ----------------------------------------
@@ -1200,6 +1331,15 @@ Tarih: ${date}
       statusBar.innerText = "Müşteri siliniyor...";
 
       try {
+        await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?customer_id=eq.${activeDetail.customerId}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
         const res = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
           method: "DELETE",
           headers: {
@@ -1226,6 +1366,207 @@ Tarih: ${date}
         }
       } catch (error) {
         statusBar.innerText = "Müşteri silinirken bağlantı hatası oluştu.";
+      }
+    }
+
+    function openEditTransactionModal(id, type, amount, description) {
+      editingTransaction = {
+        id,
+        customerId: activeDetail.customerId,
+        customerName: activeDetail.customerName,
+        type,
+        oldAmount: Number(amount || 0)
+      };
+
+      document.getElementById("editCustomerName").innerText = activeDetail.customerName;
+      document.getElementById("editTransactionAmount").value = Number(amount || 0);
+      document.getElementById("editTransactionDescription").value = description || "";
+      document.getElementById("editTransactionModal").classList.remove("hidden");
+    }
+
+    function closeEditTransactionModal() {
+      document.getElementById("editTransactionModal").classList.add("hidden");
+      editingTransaction = {
+        id: null,
+        customerId: null,
+        customerName: "",
+        type: null,
+        oldAmount: 0
+      };
+    }
+
+    async function saveEditedTransaction() {
+      const statusBar = document.getElementById("statusBar");
+      const newAmount = Number(document.getElementById("editTransactionAmount").value);
+      const newDescription = document.getElementById("editTransactionDescription").value.trim();
+
+      if (!editingTransaction.id || !editingTransaction.customerId || !editingTransaction.type) {
+        statusBar.innerText = "Düzenlenecek işlem bulunamadı.";
+        return;
+      }
+
+      if (!newAmount || newAmount <= 0) {
+        statusBar.innerText = "Geçerli bir tutar gir.";
+        return;
+      }
+
+      statusBar.innerText = "İşlem düzenleniyor...";
+
+      try {
+        const updateTx = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${editingTransaction.id}`, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({
+            amount: newAmount,
+            description: newDescription || "Düzenlenmiş işlem"
+          })
+        });
+
+        if (!updateTx.ok) {
+          const errorText = await updateTx.text();
+          statusBar.innerText = "İşlem düzenlenemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}&select=id,balance`, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const customerData = await balanceRes.json();
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0
+          ? Number(customerData[0].balance || 0)
+          : 0;
+
+        let newBalance = currentBalance;
+
+        if (editingTransaction.type === "sale") {
+          newBalance = currentBalance - editingTransaction.oldAmount + newAmount;
+        } else {
+          newBalance = currentBalance + editingTransaction.oldAmount - newAmount;
+        }
+
+        const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${editingTransaction.customerId}`, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({
+            balance: newBalance
+          })
+        });
+
+        if (!updateCustomer.ok) {
+          const errorText = await updateCustomer.text();
+          statusBar.innerText = "Borç güncellenemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        statusBar.innerText = "İşlem başarıyla düzenlendi.";
+        closeEditTransactionModal();
+
+        const savedUser = localStorage.getItem("dml_user");
+        if (savedUser) {
+          const tenant = JSON.parse(savedUser);
+          await fetchCustomers(tenant.tenant_id);
+        }
+
+        await openDetailModal(editingTransaction.customerId, activeDetail.customerName, newBalance);
+
+      } catch (error) {
+        statusBar.innerText = "İşlem düzenlenirken bağlantı hatası oluştu.";
+      }
+    }
+
+    async function deleteTransaction(transactionId, type, amount) {
+      const statusBar = document.getElementById("statusBar");
+      const ok = confirm("Bu işlemi silmek istediğine emin misin?");
+      if (!ok) return;
+
+      statusBar.innerText = "İşlem siliniyor...";
+
+      try {
+        const deleteRes = await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?id=eq.${transactionId}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!deleteRes.ok) {
+          const errorText = await deleteRes.text();
+          statusBar.innerText = "İşlem silinemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        const balanceRes = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}&select=id,balance`, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const customerData = await balanceRes.json();
+        const currentBalance = Array.isArray(customerData) && customerData.length > 0
+          ? Number(customerData[0].balance || 0)
+          : 0;
+
+        const amountNum = Number(amount || 0);
+        const newBalance = type === "sale"
+          ? currentBalance - amountNum
+          : currentBalance + amountNum;
+
+        const updateCustomer = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({
+            balance: newBalance
+          })
+        });
+
+        if (!updateCustomer.ok) {
+          const errorText = await updateCustomer.text();
+          statusBar.innerText = "Borç güncellenemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        statusBar.innerText = "İşlem başarıyla silindi.";
+
+        const savedUser = localStorage.getItem("dml_user");
+        if (savedUser) {
+          const tenant = JSON.parse(savedUser);
+          await fetchCustomers(tenant.tenant_id);
+        }
+
+        await openDetailModal(activeDetail.customerId, activeDetail.customerName, newBalance);
+
+      } catch (error) {
+        statusBar.innerText = "İşlem silinirken bağlantı hatası oluştu.";
       }
     }
 
@@ -1260,6 +1601,7 @@ Tarih: ${date}
       document.getElementById("statusBar").innerText = "";
       closeTransactionModal();
       closeDetailModal();
+      closeEditTransactionModal();
     }
 
     function closeTransactionModal() {
