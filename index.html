@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DML VERESİYE9</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     * {
@@ -134,7 +135,9 @@
     .secondary-btn:hover,
     .danger-btn:hover,
     .edit-btn:hover,
-    .delete-btn:hover {
+    .delete-btn:hover,
+    .menu-btn-link:hover,
+    .report-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -240,7 +243,8 @@
       margin-bottom: 0;
     }
 
-    .menu-btn {
+    .menu-btn,
+    .menu-btn-link {
       background: white;
       color: #0f5f54;
       border: 1px solid #d8dde1;
@@ -248,7 +252,12 @@
       border-radius: 12px;
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      cursor: default;
+    }
+
+    .menu-btn-link.active {
+      background: #0f5f54;
+      color: white;
+      border-color: #0f5f54;
     }
 
     .right-tools {
@@ -258,7 +267,8 @@
       flex-wrap: wrap;
     }
 
-    .refresh-btn {
+    .refresh-btn,
+    .report-btn {
       background: #ff7a00;
       color: white;
       padding: 11px 18px;
@@ -267,7 +277,28 @@
       box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
     }
 
-    .form-box {
+    .secondary-btn {
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .danger-btn {
+      background: #b91c1c;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
+    }
+
+    .form-box,
+    .report-box {
       background: #ffffff;
       border: 1px solid #e5e7eb;
       border-radius: 18px;
@@ -276,7 +307,8 @@
       margin-bottom: 18px;
     }
 
-    .form-title {
+    .form-title,
+    .report-title {
       font-size: 18px;
       font-weight: 700;
       color: #0f5f54;
@@ -286,6 +318,13 @@
     .form-grid {
       display: grid;
       grid-template-columns: minmax(220px, 340px) minmax(140px, 180px);
+      gap: 12px;
+      align-items: end;
+    }
+
+    .report-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
       align-items: end;
     }
@@ -331,7 +370,8 @@
       overflow: hidden;
     }
 
-    .customer-card::before {
+    .customer-card::before,
+    .summary-card::before {
       content: "";
       position: absolute;
       top: 0;
@@ -421,6 +461,85 @@
       align-items: center;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card {
+      position: relative;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      min-height: 130px;
+    }
+
+    .summary-label {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      margin-top: 8px;
+    }
+
+    .summary-value {
+      color: #111827;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .report-table-wrap {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .report-table th {
+      background: #0f5f54;
+      color: white;
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+
+    .report-table td {
+      padding: 14px 16px;
+      border-top: 1px solid #edf0f2;
+      font-size: 14px;
+      color: #374151;
+      vertical-align: top;
+    }
+
+    .report-pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .report-pill.sale {
+      background: #fff1e6;
+      color: #ff7a00;
+    }
+
+    .report-pill.payment {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -487,26 +606,6 @@
       font-size: 15px;
       font-weight: 700;
       box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
-    }
-
-    .secondary-btn {
-      background: #eef6f4;
-      color: #0f5f54;
-      border: 1px solid #d8e8e3;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .danger-btn {
-      background: #b91c1c;
-      color: white;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
     }
 
     .detail-modal {
@@ -659,16 +758,49 @@
       display: none;
     }
 
+    body.print-report .panel > * {
+      display: none !important;
+    }
+
+    body.print-report #reportsView,
+    body.print-report #reportsView * {
+      display: block !important;
+      visibility: visible !important;
+    }
+
+    body.print-report #reportsView .report-table {
+      display: table !important;
+      width: 100%;
+    }
+
+    body.print-report #reportsView .report-table thead {
+      display: table-header-group !important;
+    }
+
+    body.print-report #reportsView .report-table tbody {
+      display: table-row-group !important;
+    }
+
+    body.print-report #reportsView .report-table tr {
+      display: table-row !important;
+    }
+
+    body.print-report #reportsView .report-table th,
+    body.print-report #reportsView .report-table td {
+      display: table-cell !important;
+    }
+
     @media print {
-      body * {
+      body:not(.print-report) * {
         visibility: hidden;
       }
 
-      #printArea, #printArea * {
+      body:not(.print-report) #printArea,
+      body:not(.print-report) #printArea * {
         visibility: visible;
       }
 
-      #printArea {
+      body:not(.print-report) #printArea {
         position: absolute;
         left: 0;
         top: 0;
@@ -678,15 +810,43 @@
         padding: 24px;
       }
 
-      .detail-tools,
-      .history-actions,
-      .logout {
+      body:not(.print-report) .detail-tools,
+      body:not(.print-report) .history-actions,
+      body:not(.print-report) .logout {
         display: none !important;
       }
 
-      .print-area-title {
+      body:not(.print-report) .print-area-title {
         display: block;
         margin-bottom: 18px;
+      }
+
+      body.print-report {
+        background: white !important;
+      }
+
+      body.print-report .main {
+        padding: 0 !important;
+      }
+
+      body.print-report .top-actions,
+      body.print-report .form-box,
+      body.print-report #statusBar,
+      body.print-report .report-box .report-filter-grid,
+      body.print-report .report-box .detail-tools {
+        display: none !important;
+      }
+
+      body.print-report #reportsView {
+        padding: 24px !important;
+        background: white !important;
+      }
+
+      body.print-report .report-box,
+      body.print-report .summary-card,
+      body.print-report .report-table-wrap {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
       }
     }
 
@@ -699,7 +859,8 @@
         font-size: 24px;
       }
 
-      .form-grid {
+      .form-grid,
+      .report-filter-grid {
         grid-template-columns: 1fr;
       }
 
@@ -719,6 +880,10 @@
 
       .detail-head {
         align-items: flex-start;
+      }
+
+      .report-table-wrap {
+        overflow-x: auto;
       }
     }
   </style>
@@ -770,8 +935,8 @@
     <div class="main">
       <div class="top-actions">
         <div class="menu">
-          <button class="menu-btn">Müşteriler</button>
-          <button class="menu-btn">Raporlar</button>
+          <button id="menuCustomers" class="menu-btn-link active" onclick="showCustomersView()">Müşteriler</button>
+          <button id="menuReports" class="menu-btn-link" onclick="showReportsView()">Raporlar</button>
           <button class="menu-btn">Kasa</button>
           <button class="menu-btn">Ayarlar</button>
         </div>
@@ -781,21 +946,84 @@
         </div>
       </div>
 
-      <div class="form-box">
-        <div class="form-title">Yeni Müşteri Ekle</div>
-        <div class="form-grid">
-          <div>
-            <label for="newCustomerName">Müşteri Adı</label>
-            <input id="newCustomerName" type="text" placeholder="Örn: Kaya Market" />
-          </div>
-          <div>
-            <button class="save-btn" onclick="addCustomer()">Kaydet</button>
+      <div id="customersView">
+        <div class="form-box">
+          <div class="form-title">Yeni Müşteri Ekle</div>
+          <div class="form-grid">
+            <div>
+              <label for="newCustomerName">Müşteri Adı</label>
+              <input id="newCustomerName" type="text" placeholder="Örn: Kaya Market" />
+            </div>
+            <div>
+              <button class="save-btn" onclick="addCustomer()">Kaydet</button>
+            </div>
           </div>
         </div>
+
+        <div id="statusBar" class="status-bar"></div>
+        <div id="cards" class="cards"></div>
       </div>
 
-      <div id="statusBar" class="status-bar"></div>
-      <div id="cards" class="cards"></div>
+      <div id="reportsView" class="hidden">
+        <div class="report-box">
+          <div class="report-title">Rapor Filtreleri</div>
+          <div class="report-filter-grid">
+            <div>
+              <label for="reportStartDate">Başlangıç Tarihi</label>
+              <input id="reportStartDate" type="date" />
+            </div>
+            <div>
+              <label for="reportEndDate">Bitiş Tarihi</label>
+              <input id="reportEndDate" type="date" />
+            </div>
+            <div>
+              <button class="report-btn" onclick="loadReports()">Raporu Getir</button>
+            </div>
+            <div class="detail-tools" style="margin:0;">
+              <button class="secondary-btn" onclick="printReports()">Yazdır</button>
+              <button class="secondary-btn" onclick="downloadReportsPdf()">PDF Aktar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Toplam Müşteri</div>
+            <div id="summaryCustomerCount" class="summary-value">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Alacak</div>
+            <div id="summaryTotalBalance" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Satış</div>
+            <div id="summaryTotalSales" class="summary-value">0 ₺</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Toplam Tahsilat</div>
+            <div id="summaryTotalPayments" class="summary-value">0 ₺</div>
+          </div>
+        </div>
+
+        <div class="report-table-wrap">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Tarih</th>
+                <th>Müşteri</th>
+                <th>İşlem Türü</th>
+                <th>Tutar</th>
+                <th>Açıklama</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <tr>
+                <td colspan="5">Rapor henüz yüklenmedi.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -893,6 +1121,12 @@
       oldAmount: 0
     };
 
+    let reportsCache = {
+      customers: [],
+      transactions: [],
+      customerMap: {}
+    };
+
     async function login() {
       const user = document.getElementById("user").value.trim();
       const pass = document.getElementById("pass").value.trim();
@@ -931,6 +1165,35 @@
         msg.className = "msg err";
         msg.innerText = "Bağlantı hatası oluştu";
       }
+    }
+
+    function getSavedTenant() {
+      const savedUser = localStorage.getItem("dml_user");
+      if (!savedUser) return null;
+      try {
+        return JSON.parse(savedUser);
+      } catch {
+        localStorage.removeItem("dml_user");
+        return null;
+      }
+    }
+
+    function showCustomersView() {
+      document.getElementById("customersView").classList.remove("hidden");
+      document.getElementById("reportsView").classList.add("hidden");
+      document.getElementById("menuCustomers").classList.add("active");
+      document.getElementById("menuReports").classList.remove("active");
+      document.querySelector(".refresh-btn").classList.remove("hidden");
+      document.body.classList.remove("print-report");
+    }
+
+    function showReportsView() {
+      document.getElementById("customersView").classList.add("hidden");
+      document.getElementById("reportsView").classList.remove("hidden");
+      document.getElementById("menuCustomers").classList.remove("active");
+      document.getElementById("menuReports").classList.add("active");
+      document.querySelector(".refresh-btn").classList.add("hidden");
+      loadReports();
     }
 
     async function fetchCustomers(tenantId) {
@@ -994,9 +1257,9 @@
       const input = document.getElementById("newCustomerName");
       const name = input.value.trim();
       const statusBar = document.getElementById("statusBar");
-      const savedUser = localStorage.getItem("dml_user");
+      const tenant = getSavedTenant();
 
-      if (!savedUser) {
+      if (!tenant) {
         statusBar.innerText = "Önce giriş yapılmalı.";
         return;
       }
@@ -1004,15 +1267,6 @@
       if (!name) {
         statusBar.innerText = "Müşteri adı boş bırakılamaz.";
         input.focus();
-        return;
-      }
-
-      let tenant;
-      try {
-        tenant = JSON.parse(savedUser);
-      } catch (e) {
-        localStorage.removeItem("dml_user");
-        statusBar.innerText = "Oturum bilgisi okunamadı.";
         return;
       }
 
@@ -1050,16 +1304,8 @@
     }
 
     function openTransactionModal(type, customerId, customerName) {
-      const savedUser = localStorage.getItem("dml_user");
-      if (!savedUser) return;
-
-      let tenant;
-      try {
-        tenant = JSON.parse(savedUser);
-      } catch (e) {
-        localStorage.removeItem("dml_user");
-        return;
-      }
+      const tenant = getSavedTenant();
+      if (!tenant) return;
 
       activeTransaction = {
         customerId,
@@ -1269,52 +1515,51 @@
     }
 
     function printDetail() {
+      document.body.classList.remove("print-report");
       window.print();
     }
 
-    function downloadDetailPdf() {
+    async function downloadDetailPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
       const detailName = document.getElementById("detailCustomerName").innerText || "Cari Detay";
       const detailBalance = document.getElementById("detailCustomerBalance").innerText || "";
       const items = Array.from(document.querySelectorAll("#detailHistoryList .history-item"));
 
-      let content = `
-DML VERESİYE9
-${detailName}
-${detailBalance}
-İletişim: 0 541 465 66 22
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9", 14, y);
+      y += 10;
+      doc.setFontSize(14);
+      doc.text(detailName, 14, y);
+      y += 8;
+      doc.text(detailBalance, 14, y);
+      y += 8;
+      doc.text("Iletisim: 0 541 465 66 22", 14, y);
+      y += 12;
 
-İŞLEM GEÇMİŞİ
-----------------------------------------
-`;
+      items.forEach((item, index) => {
+        const type = item.querySelector(".history-type")?.innerText || "";
+        const amount = item.querySelector(".history-amount")?.innerText || "";
+        const desc = item.querySelector(".history-desc")?.innerText || "";
+        const date = item.querySelector(".history-date")?.innerText || "";
 
-      if (items.length === 0) {
-        content += "İşlem geçmişi bulunamadı.\n";
-      } else {
-        items.forEach((item, index) => {
-          const type = item.querySelector(".history-type")?.innerText || "";
-          const amount = item.querySelector(".history-amount")?.innerText || "";
-          const desc = item.querySelector(".history-desc")?.innerText || "";
-          const date = item.querySelector(".history-date")?.innerText || "";
+        if (y > 260) {
+          doc.addPage();
+          y = 20;
+        }
 
-          content += `
-${index + 1}. ${type}
-Tutar: ${amount}
-Açıklama: ${desc}
-Tarih: ${date}
-----------------------------------------
-`;
-        });
-      }
+        doc.setFontSize(12);
+        doc.text(`${index + 1}. ${type} - ${amount}`, 14, y);
+        y += 7;
+        doc.setFontSize(10);
+        doc.text(`Aciklama: ${desc}`.slice(0, 90), 14, y);
+        y += 6;
+        doc.text(`Tarih: ${date}`.slice(0, 90), 14, y);
+        y += 10;
+      });
 
-      const blob = new Blob([content], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${detailName.replaceAll(" ", "_")}_cari_detay.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      doc.save(`${detailName.replaceAll(" ", "_")}_cari_detay.pdf`);
     }
 
     async function deleteCustomer() {
@@ -1351,21 +1596,20 @@ Tarih: ${date}
 
         if (!res.ok) {
           const errorText = await res.text();
-          statusBar.innerText = "Müşteri silinemedi.";
+          document.getElementById("statusBar").innerText = "Müşteri silinemedi.";
           console.error(errorText);
           return;
         }
 
-        statusBar.innerText = "Müşteri başarıyla silindi.";
+        document.getElementById("statusBar").innerText = "Müşteri başarıyla silindi.";
         closeDetailModal();
 
-        const savedUser = localStorage.getItem("dml_user");
-        if (savedUser) {
-          const tenant = JSON.parse(savedUser);
+        const tenant = getSavedTenant();
+        if (tenant) {
           fetchCustomers(tenant.tenant_id);
         }
       } catch (error) {
-        statusBar.innerText = "Müşteri silinirken bağlantı hatası oluştu.";
+        document.getElementById("statusBar").innerText = "Müşteri silinirken bağlantı hatası oluştu.";
       }
     }
 
@@ -1479,9 +1723,8 @@ Tarih: ${date}
         statusBar.innerText = "İşlem başarıyla düzenlendi.";
         closeEditTransactionModal();
 
-        const savedUser = localStorage.getItem("dml_user");
-        if (savedUser) {
-          const tenant = JSON.parse(savedUser);
+        const tenant = getSavedTenant();
+        if (tenant) {
           await fetchCustomers(tenant.tenant_id);
         }
 
@@ -1557,9 +1800,8 @@ Tarih: ${date}
 
         statusBar.innerText = "İşlem başarıyla silindi.";
 
-        const savedUser = localStorage.getItem("dml_user");
-        if (savedUser) {
-          const tenant = JSON.parse(savedUser);
+        const tenant = getSavedTenant();
+        if (tenant) {
           await fetchCustomers(tenant.tenant_id);
         }
 
@@ -1570,23 +1812,158 @@ Tarih: ${date}
       }
     }
 
+    async function loadReports() {
+      const tenant = getSavedTenant();
+      if (!tenant) return;
+
+      const startDate = document.getElementById("reportStartDate").value;
+      const endDate = document.getElementById("reportEndDate").value;
+      const reportBody = document.getElementById("reportTableBody");
+
+      reportBody.innerHTML = `<tr><td colspan="5">Rapor yükleniyor...</td></tr>`;
+
+      try {
+        const customerUrl = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenant.tenant_id}&select=id,full_name,balance&order=full_name.asc`;
+        const customersRes = await fetch(customerUrl, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const customers = await customersRes.json();
+        const customerMap = {};
+        if (Array.isArray(customers)) {
+          customers.forEach(c => {
+            customerMap[c.id] = c.full_name;
+          });
+        }
+
+        let txUrl = `${SUPABASE_URL}/rest/v1/customer_transactions?tenant_id=eq.${tenant.tenant_id}&select=id,customer_id,transaction_type,amount,description,created_at&order=created_at.desc`;
+        if (startDate) {
+          txUrl += `&created_at=gte.${startDate}T00:00:00`;
+        }
+        if (endDate) {
+          txUrl += `&created_at=lte.${endDate}T23:59:59`;
+        }
+
+        const txRes = await fetch(txUrl, {
+          method: "GET",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        const transactions = await txRes.json();
+
+        reportsCache = {
+          customers: Array.isArray(customers) ? customers : [],
+          transactions: Array.isArray(transactions) ? transactions : [],
+          customerMap
+        };
+
+        const totalCustomerCount = reportsCache.customers.length;
+        const totalBalance = reportsCache.customers.reduce((sum, item) => sum + Number(item.balance || 0), 0);
+        const totalSales = reportsCache.transactions
+          .filter(item => item.transaction_type === "sale")
+          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const totalPayments = reportsCache.transactions
+          .filter(item => item.transaction_type === "payment")
+          .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+        document.getElementById("summaryCustomerCount").innerText = totalCustomerCount;
+        document.getElementById("summaryTotalBalance").innerText = `${formatMoney(totalBalance)} ₺`;
+        document.getElementById("summaryTotalSales").innerText = `${formatMoney(totalSales)} ₺`;
+        document.getElementById("summaryTotalPayments").innerText = `${formatMoney(totalPayments)} ₺`;
+
+        if (!reportsCache.transactions.length) {
+          reportBody.innerHTML = `<tr><td colspan="5">Bu aralıkta işlem bulunamadı.</td></tr>`;
+          return;
+        }
+
+        reportBody.innerHTML = reportsCache.transactions.map(item => `
+          <tr>
+            <td>${formatDate(item.created_at)}</td>
+            <td>${escapeHtml(customerMap[item.customer_id] || "Bilinmeyen Müşteri")}</td>
+            <td><span class="report-pill ${item.transaction_type === "sale" ? "sale" : "payment"}">${item.transaction_type === "sale" ? "Satış" : "Tahsilat"}</span></td>
+            <td>${formatMoney(item.amount || 0)} ₺</td>
+            <td>${escapeHtml(item.description || "-")}</td>
+          </tr>
+        `).join("");
+      } catch (error) {
+        reportBody.innerHTML = `<tr><td colspan="5">Rapor yüklenirken hata oluştu.</td></tr>`;
+      }
+    }
+
+    function printReports() {
+      document.body.classList.add("print-report");
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove("print-report");
+      }, 500);
+    }
+
+    async function downloadReportsPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 20;
+      doc.setFontSize(18);
+      doc.text("DML VERESIYE9 RAPORLAR", 14, y);
+      y += 10;
+      doc.setFontSize(11);
+      doc.text(`Toplam Musteri: ${document.getElementById("summaryCustomerCount").innerText}`, 14, y);
+      y += 7;
+      doc.text(`Toplam Alacak: ${document.getElementById("summaryTotalBalance").innerText}`, 14, y);
+      y += 7;
+      doc.text(`Toplam Satis: ${document.getElementById("summaryTotalSales").innerText}`, 14, y);
+      y += 7;
+      doc.text(`Toplam Tahsilat: ${document.getElementById("summaryTotalPayments").innerText}`, 14, y);
+      y += 12;
+
+      if (!reportsCache.transactions.length) {
+        doc.text("Islem bulunamadi.", 14, y);
+        doc.save("DML_VERESIYE9_Raporlar.pdf");
+        return;
+      }
+
+      reportsCache.transactions.forEach((item, index) => {
+        const line1 = `${index + 1}. ${item.transaction_type === "sale" ? "Satis" : "Tahsilat"} - ${formatMoney(item.amount || 0)} TL`;
+        const line2 = `Musteri: ${reportsCache.customerMap[item.customer_id] || "Bilinmeyen Musteri"}`;
+        const line3 = `Aciklama: ${(item.description || "-").slice(0, 70)}`;
+        const line4 = `Tarih: ${formatDate(item.created_at)}`;
+
+        if (y > 255) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.setFontSize(11);
+        doc.text(line1, 14, y); y += 6;
+        doc.text(line2, 14, y); y += 6;
+        doc.text(line3, 14, y); y += 6;
+        doc.text(line4, 14, y); y += 10;
+      });
+
+      doc.save("DML_VERESIYE9_Raporlar.pdf");
+    }
+
     function openPanel(tenant) {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("panelScreen").classList.remove("hidden");
       document.getElementById("companyName").innerText = tenant.company_name || "-";
       fetchCustomers(tenant.tenant_id);
+      showCustomersView();
     }
 
     function refreshCustomers() {
-      const savedUser = localStorage.getItem("dml_user");
-      if (!savedUser) return;
-
-      try {
-        const tenant = JSON.parse(savedUser);
-        fetchCustomers(tenant.tenant_id);
-      } catch (e) {
-        localStorage.removeItem("dml_user");
-      }
+      const tenant = getSavedTenant();
+      if (!tenant) return;
+      fetchCustomers(tenant.tenant_id);
     }
 
     function logout() {
@@ -1602,15 +1979,18 @@ Tarih: ${date}
       closeTransactionModal();
       closeDetailModal();
       closeEditTransactionModal();
+      document.body.classList.remove("print-report");
+      showCustomersView();
     }
 
-    function closeTransactionModal() {
-      document.getElementById("transactionModal").classList.add("hidden");
-      activeTransaction = {
+    function closeEditTransactionModal() {
+      document.getElementById("editTransactionModal").classList.add("hidden");
+      editingTransaction = {
+        id: null,
         customerId: null,
         customerName: "",
-        tenantId: null,
-        type: null
+        type: null,
+        oldAmount: 0
       };
     }
 
@@ -1644,17 +2024,11 @@ Tarih: ${date}
     }
 
     window.onload = function () {
-      const savedUser = localStorage.getItem("dml_user");
-      if (savedUser) {
-        try {
-          const tenant = JSON.parse(savedUser);
-          openPanel(tenant);
-        } catch (e) {
-          localStorage.removeItem("dml_user");
-        }
+      const tenant = getSavedTenant();
+      if (tenant) {
+        openPanel(tenant);
       }
     };
   </script>
-
 </body>
 </html>
