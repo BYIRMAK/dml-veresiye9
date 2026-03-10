@@ -6,242 +6,324 @@
   <title>DML VERESİYE9</title>
 
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    body{
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:#f3f5f7;
-      color:#1f2937;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5f7;
+      color: #1f2937;
     }
 
-    .app{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
+    .hidden {
+      display: none !important;
     }
 
-    .login-card{
-      width:100%;
-      max-width:420px;
-      background:white;
-      border-radius:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.10);
-      overflow:hidden;
+    .app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
     }
 
-    .top{
-      background:#0f5f54;
-      color:white;
-      padding:28px 24px 20px 24px;
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
     }
 
-    .brand{
-      font-size:30px;
-      font-weight:700;
-      margin:0 0 8px 0;
+    .top {
+      background: linear-gradient(135deg, #0f5f54 0%, #146c60 100%);
+      color: white;
+      padding: 30px 24px 24px 24px;
     }
 
-    .sub{
-      margin:0;
-      font-size:14px;
-      opacity:0.95;
+    .brand {
+      font-size: 31px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      letter-spacing: 0.3px;
     }
 
-    .content{
-      padding:24px;
+    .sub {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
     }
 
-    label{
-      display:block;
-      margin-bottom:8px;
-      font-size:14px;
-      font-weight:600;
+    .content {
+      padding: 24px;
     }
 
-    input{
-      width:100%;
-      padding:13px 14px;
-      border:1px solid #d1d5db;
-      border-radius:10px;
-      margin-bottom:16px;
-      font-size:15px;
-      outline:none;
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
     }
 
-    input:focus{
-      border-color:#0f5f54;
+    input {
+      width: 100%;
+      padding: 14px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
     }
 
-    button{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:10px;
-      background:#ff7a00;
-      color:white;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
+    input:focus {
+      border-color: #0f5f54;
+      box-shadow: 0 0 0 3px rgba(15, 95, 84, 0.12);
     }
 
-    button:hover{
-      opacity:0.95;
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s ease;
     }
 
-    .msg{
-      margin-top:16px;
-      font-size:14px;
-      text-align:center;
-      min-height:20px;
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: #ff7a00;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
     }
 
-    .ok{
-      color:#0f5f54;
-      font-weight:700;
+    .login-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
     }
 
-    .err{
-      color:#b91c1c;
-      font-weight:700;
+    .msg {
+      margin-top: 16px;
+      font-size: 14px;
+      text-align: center;
+      min-height: 20px;
     }
 
-    .info{
-      margin-top:18px;
-      text-align:center;
-      font-size:13px;
-      color:#6b7280;
+    .ok {
+      color: #0f5f54;
+      font-weight: 700;
     }
 
-    .hidden{
-      display:none;
+    .err {
+      color: #b91c1c;
+      font-weight: 700;
     }
 
-    .panel{
-      min-height:100vh;
-      background:#eef2f4;
+    .info {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
     }
 
-    .header{
-      background:#0f5f54;
-      color:white;
-      padding:18px 24px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
+    .panel {
+      min-height: 100vh;
+      background: #edf1f3;
     }
 
-    .header-title{
-      font-size:28px;
-      font-weight:700;
+    .header {
+      background: linear-gradient(135deg, #0f5f54 0%, #136e62 100%);
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
 
-    .header-right{
-      font-size:14px;
+    .header-title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
-    .main{
-      padding:24px;
+    .header-right {
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 8px 14px;
+      border-radius: 10px;
     }
 
-    .menu{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:22px;
+    .logout {
+      background: white;
+      color: #0f5f54;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
     }
 
-    .menu-btn{
-      background:white;
-      color:#0f5f54;
-      border:1px solid #d7dcdf;
-      padding:10px 16px;
-      border-radius:10px;
-      font-weight:700;
-      cursor:default;
-      width:auto;
+    .logout:hover {
+      transform: translateY(-1px);
     }
 
-  .cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(240px, 240px));
-  gap:20px;
-  align-items:start;
-}
+    .main {
+      padding: 24px;
     }
 
-   .customer-card{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 24px rgba(0,0,0,0.08);
-  width:240px;
-  min-height:220px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  border:1px solid #e5e7eb;
-}
-
-    .customer-name{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:12px;
-  color:#111827;
-}
-
-.customer-balance{
-  font-size:17px;
-  font-weight:600;
-  color:#374151;
-  margin-bottom:8px;
-}
-
-   .actions{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-top:16px;
-}
-
-.sale{
-  background:#ff7a00;
-  color:white;
-  width:100%;
-  padding:12px 14px;
-  font-size:15px;
-  border-radius:10px;
-}
-
-.pay{
-  background:#0f5f54;
-  color:white;
-  width:100%;
-  padding:12px 14px;
-  font-size:15px;
-  border-radius:10px;
-}
-
-    .logout{
-      background:#ffffff;
-      color:#0f5f54;
-      width:auto;
-      padding:10px 14px;
-      font-size:14px;
+    .menu {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
     }
 
-    .empty{
-      background:white;
-      padding:18px;
-      border-radius:14px;
-      color:#6b7280;
-      box-shadow:0 8px 20px rgba(0,0,0,0.06);
+    .menu-btn {
+      background: white;
+      color: #0f5f54;
+      border: 1px solid #d8dde1;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      cursor: default;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+      gap: 22px;
+      align-items: start;
+    }
+
+    .customer-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      width: 240px;
+      min-height: 240px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .customer-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #0f5f54 0%, #ff7a00 100%);
+    }
+
+    .card-top {
+      margin-top: 10px;
+    }
+
+    .customer-name {
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #111827;
+      margin-bottom: 14px;
+    }
+
+    .customer-balance {
+      font-size: 18px;
+      font-weight: 700;
+      color: #374151;
+      background: #f9fafb;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #eceff3;
+      display: inline-block;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .sale {
+      background: #ff7a00;
+      color: white;
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(255, 122, 0, 0.18);
+    }
+
+    .sale:hover {
+      transform: translateY(-1px);
+    }
+
+    .pay {
+      background: #0f5f54;
+      color: white;
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+    }
+
+    .pay:hover {
+      transform: translateY(-1px);
+    }
+
+    .empty {
+      background: #ffffff;
+      width: 240px;
+      min-height: 240px;
+      border-radius: 20px;
+      padding: 20px;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+      line-height: 1.6;
+      display: flex;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        align-items: flex-start;
+      }
+
+      .header-title {
+        font-size: 24px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 220px));
+        justify-content: center;
+      }
+
+      .customer-card,
+      .empty {
+        width: 220px;
+        min-height: 230px;
+      }
     }
   </style>
 </head>
@@ -261,7 +343,7 @@
         <label for="pass">Şifre</label>
         <input id="pass" type="password" placeholder="Şifre" />
 
-        <button onclick="login()">Giriş Yap</button>
+        <button class="login-btn" onclick="login()">Giriş Yap</button>
 
         <div id="msg" class="msg"></div>
 
@@ -323,12 +405,9 @@
 
         if (Array.isArray(data) && data.length > 0) {
           const tenant = data[0];
-
           localStorage.setItem("dml_user", JSON.stringify(tenant));
-
           msg.className = "msg ok";
           msg.innerText = "Giriş başarılı";
-
           openPanel(tenant);
         } else {
           msg.className = "msg err";
@@ -348,8 +427,10 @@
       const cards = document.getElementById("cards");
       cards.innerHTML = `
         <div class="customer-card">
-          <div class="customer-name">Ahmet Market Cari</div>
-          <div class="customer-balance">Borç: 4.250 ₺</div>
+          <div class="card-top">
+            <div class="customer-name">Ahmet Market Cari</div>
+            <div class="customer-balance">Borç: 4.250 ₺</div>
+          </div>
           <div class="actions">
             <button class="sale">Satış Yap</button>
             <button class="pay">Tahsilat Yap</button>
@@ -357,8 +438,10 @@
         </div>
 
         <div class="customer-card">
-          <div class="customer-name">Mehmet Büfe Cari</div>
-          <div class="customer-balance">Borç: 980 ₺</div>
+          <div class="card-top">
+            <div class="customer-name">Mehmet Büfe Cari</div>
+            <div class="customer-balance">Borç: 980 ₺</div>
+          </div>
           <div class="actions">
             <button class="sale">Satış Yap</button>
             <button class="pay">Tahsilat Yap</button>
@@ -380,7 +463,7 @@
       document.getElementById("pass").value = "";
     }
 
-    window.onload = function() {
+    window.onload = function () {
       const savedUser = localStorage.getItem("dml_user");
       if (savedUser) {
         try {
