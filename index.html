@@ -8,47 +8,50 @@
 
 body{
 font-family:Arial;
-background:#f5f6f7;
+background:#f4f6f8;
 margin:0;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-.header{
-background:#0f5f54;
-color:white;
-padding:20px;
-font-size:22px;
-}
-
-.container{
-padding:30px;
-}
-
-.card{
+.login-box{
 background:white;
-padding:20px;
+padding:40px;
 border-radius:10px;
-box-shadow:0 5px 10px rgba(0,0,0,0.1);
-width:250px;
-display:inline-block;
-margin:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+width:300px;
+text-align:center;
 }
 
-.btn{
+h1{
+color:#0f5f54;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
 padding:10px;
-border:none;
-border-radius:6px;
-cursor:pointer;
 margin-top:10px;
+border:1px solid #ddd;
+border-radius:5px;
 }
 
-.sale{
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
 background:#ff7a00;
 color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:16px;
 }
 
-.pay{
-background:#0f5f54;
-color:white;
+button:hover{
+background:#e46b00;
 }
 
 </style>
@@ -57,27 +60,54 @@ color:white;
 
 <body>
 
-<div class="header">
-DML VERESİYE9
-</div>
+<div class="login-box">
 
-<div class="container">
+<h1>DML VERESİYE9</h1>
 
-<div class="card">
-<h3>Ahmet Market</h3>
-<p>Borç: 4250 ₺</p>
-<button class="btn sale">Satış Yap</button>
-<button class="btn pay">Tahsilat</button>
-</div>
+<input id="user" placeholder="Kullanıcı Kodu">
 
-<div class="card">
-<h3>Mehmet Büfe</h3>
-<p>Borç: 980 ₺</p>
-<button class="btn sale">Satış Yap</button>
-<button class="btn pay">Tahsilat</button>
-</div>
+<input id="pass" type="password" placeholder="Şifre">
+
+<button onclick="login()">Giriş Yap</button>
+
+<p id="msg"></p>
 
 </div>
+
+<script>
+
+async function login(){
+
+let user=document.getElementById("user").value
+let pass=document.getElementById("pass").value
+
+let res=await fetch("https://YOURPROJECT.supabase.co/rest/v1/rpc/dml_login",{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+"apikey":"YOUR_ANON_KEY"
+},
+body:JSON.stringify({
+p_user_code:user,
+p_password:pass
+})
+})
+
+let data=await res.json()
+
+if(data.length>0){
+
+document.getElementById("msg").innerText="Giriş başarılı"
+
+}else{
+
+document.getElementById("msg").innerText="Hatalı giriş"
+
+}
+
+}
+
+</script>
 
 </body>
 </html>
