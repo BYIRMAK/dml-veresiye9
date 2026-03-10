@@ -602,7 +602,7 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 999;
+      z-index: 9999;
     }
 
     .modal {
@@ -1134,7 +1134,10 @@
       <div class="detail-head">
         <div class="detail-title" id="detailCustomerName">Cari Detay</div>
         <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
-        <button class="logout" onclick="closeDetailModal()">Kapat</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="logout" onclick="printCustomerDetail()">Yazdır</button>
+          <button class="logout" onclick="closeDetailModal()">Kapat</button>
+        </div>
       </div>
       <div class="detail-body">
         <div class="detail-tools">
@@ -1473,6 +1476,70 @@
     function closeDetailModal() {
       document.getElementById("detailModalBackdrop").classList.add("hidden");
       activeDetail = { customerId: null, customerName: "", balance: 0 };
+    }
+
+    function printCustomerDetail() {
+      const name = document.getElementById("detailCustomerName").innerText;
+      const balance = document.getElementById("detailCustomerBalance").innerText;
+      const history = document.getElementById("detailHistoryList").innerHTML;
+
+      const printWindow = window.open("", "", "width=900,height=700");
+
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Cari Detay</title>
+          <style>
+            body{
+              font-family: Arial, sans-serif;
+              padding:30px;
+              color:#111827;
+            }
+            h1{
+              color:#0f5f54;
+              margin-bottom:10px;
+            }
+            .balance{
+              font-size:20px;
+              font-weight:700;
+              margin-bottom:20px;
+            }
+            .history-item{
+              border:1px solid #ddd;
+              border-radius:10px;
+              padding:12px;
+              margin-bottom:12px;
+            }
+            .history-row{
+              display:flex;
+              justify-content:space-between;
+              gap:10px;
+              margin-bottom:8px;
+              font-weight:700;
+            }
+            .history-desc{
+              margin-bottom:6px;
+            }
+            .history-date{
+              color:#666;
+              font-size:13px;
+            }
+            .history-actions{
+              display:none !important;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${name}</h1>
+          <div class="balance">${balance}</div>
+          ${history}
+        </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
     }
 
     async function downloadDetailPdf() {
