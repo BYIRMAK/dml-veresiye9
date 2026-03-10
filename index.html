@@ -122,7 +122,8 @@
 
     .login-btn,
     .refresh-btn,
-    .report-btn {
+    .report-btn,
+    .toggle-form-btn {
       background: #ff7a00;
       color: white;
       box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
@@ -166,6 +167,15 @@
       box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
     }
 
+    .whatsapp-btn {
+      background: #25D366;
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.22);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .logout {
       background: white;
       color: #0f5f54;
@@ -189,7 +199,9 @@
     .edit-btn:hover,
     .delete-btn:hover,
     .menu-btn-link:hover,
-    .report-btn:hover {
+    .report-btn:hover,
+    .toggle-form-btn:hover,
+    .whatsapp-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -281,7 +293,7 @@
       flex-wrap: wrap;
     }
 
-    .refresh-btn, .report-btn {
+    .refresh-btn, .report-btn, .toggle-form-btn {
       padding: 11px 18px;
       border-radius: 12px;
       font-weight: 700;
@@ -311,7 +323,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: minmax(220px, 340px) minmax(140px, 180px);
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
       align-items: end;
     }
@@ -381,7 +393,7 @@
     .customer-card {
       padding: 20px;
       width: 240px;
-      min-height: 270px;
+      min-height: 285px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -410,6 +422,14 @@
       border-radius: 12px;
       border: 1px solid #eceff3;
       display: inline-block;
+    }
+
+    .customer-mini {
+      margin-top: 10px;
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
     }
 
     .detail-btn {
@@ -691,6 +711,18 @@
       margin-bottom: 16px;
     }
 
+    .detail-info-box {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      margin-bottom: 14px;
+      color: #4b5563;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
     .secondary-btn,
     .danger-btn,
     .edit-btn,
@@ -847,16 +879,25 @@
 
         <div class="right-tools">
           <button id="globalRefreshBtn" class="refresh-btn" onclick="refreshCustomers()">Yenile</button>
+          <button id="toggleCustomerFormBtn" class="toggle-form-btn" onclick="toggleCustomerForm()">Müşteri Ekle</button>
         </div>
       </div>
 
       <div id="customersView">
-        <div class="form-box">
+        <div id="customerFormBox" class="form-box hidden">
           <div class="form-title">Yeni Müşteri Ekle</div>
           <div class="form-grid">
             <div>
-              <label for="newCustomerName">Müşteri Adı</label>
-              <input id="newCustomerName" type="text" placeholder="Örn: Kaya Market" />
+              <label for="newCustomerName">Adı Soyadı</label>
+              <input id="newCustomerName" type="text" placeholder="Örn: Ahmet Yılmaz" />
+            </div>
+            <div>
+              <label for="newCustomerPhone">İletişim</label>
+              <input id="newCustomerPhone" type="text" placeholder="Örn: 05xxxxxxxxx" />
+            </div>
+            <div>
+              <label for="newCustomerAddress">Adres</label>
+              <textarea id="newCustomerAddress" placeholder="Müşteri adresi"></textarea>
             </div>
             <div>
               <button class="save-btn" onclick="addCustomer()">Kaydet</button>
@@ -1136,10 +1177,19 @@
         <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="logout" onclick="printCustomerDetail()">Yazdır</button>
+          <button class="whatsapp-btn logout" onclick="sendCustomerWhatsApp()">
+            <span style="font-size:16px;">💬</span>
+            <span>WhatsApp</span>
+          </button>
           <button class="logout" onclick="closeDetailModal()">Kapat</button>
         </div>
       </div>
       <div class="detail-body">
+        <div class="detail-info-box">
+          <div><strong>İletişim:</strong> <span id="detailCustomerPhone">-</span></div>
+          <div style="margin-top:6px;"><strong>Adres:</strong> <span id="detailCustomerAddress">-</span></div>
+        </div>
+
         <div class="detail-tools">
           <button class="secondary-btn" onclick="downloadDetailPdf()">PDF Aktar</button>
           <button class="danger-btn" onclick="deleteCustomer()">Müşteriyi Sil</button>
@@ -1154,7 +1204,7 @@
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
 
     let activeTransaction = { customerId: null, customerName: "", tenantId: null, type: null };
-    let activeDetail = { customerId: null, customerName: "", balance: 0 };
+    let activeDetail = { customerId: null, customerName: "", balance: 0, phone: "", address: "" };
     let editingTransaction = { id: null, customerId: null, customerName: "", type: null, oldAmount: 0 };
     let reportsCache = { customers: [], transactions: [], customerMap: {} };
     let cashCache = [];
@@ -1217,6 +1267,7 @@
       document.getElementById("customersView").classList.remove("hidden");
       setActiveMenu("menuCustomers");
       document.getElementById("globalRefreshBtn").classList.remove("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.remove("hidden");
     }
 
     function showReportsView() {
@@ -1224,6 +1275,7 @@
       document.getElementById("reportsView").classList.remove("hidden");
       setActiveMenu("menuReports");
       document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
       loadReports();
     }
 
@@ -1232,6 +1284,7 @@
       document.getElementById("cashView").classList.remove("hidden");
       setActiveMenu("menuCash");
       document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
       loadCash();
     }
 
@@ -1240,6 +1293,7 @@
       document.getElementById("settingsView").classList.remove("hidden");
       setActiveMenu("menuSettings");
       document.getElementById("globalRefreshBtn").classList.add("hidden");
+      document.getElementById("toggleCustomerFormBtn").classList.add("hidden");
       loadSettings();
     }
 
@@ -1257,6 +1311,11 @@
       document.getElementById(id).classList.add("active");
     }
 
+    function toggleCustomerForm() {
+      const box = document.getElementById("customerFormBox");
+      box.classList.toggle("hidden");
+    }
+
     async function fetchCustomers(tenantId) {
       const statusBar = document.getElementById("statusBar");
       const cards = document.getElementById("cards");
@@ -1264,13 +1323,13 @@
       cards.innerHTML = "";
 
       try {
-        const url = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenantId}&select=id,full_name,balance&order=created_at.desc`;
+        const url = `${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${tenantId}&select=id,full_name,balance,phone,address&order=created_at.desc`;
         const res = await fetch(url, { method: "GET", headers: getHeaders() });
         const data = await res.json();
 
         if (!Array.isArray(data) || data.length === 0) {
           statusBar.innerText = "Müşteri bulunamadı.";
-          cards.innerHTML = `<div class="empty">Bu firmaya ait müşteri bulunamadı. Yukarıdan yeni müşteri ekleyebilirsin.</div>`;
+          cards.innerHTML = `<div class="empty">Bu firmaya ait müşteri bulunamadı. Yukarıdaki Müşteri Ekle butonundan yeni kayıt açabilirsin.</div>`;
           return;
         }
 
@@ -1278,10 +1337,11 @@
 
         cards.innerHTML = data.map(customer => `
           <div class="customer-card">
-            <div class="card-top" onclick="openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)})">
+            <div class="card-top" onclick="openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)}, '${escapeJs(customer.phone || "")}', '${escapeJs(customer.address || "")}')">
               <div class="customer-name">${escapeHtml(customer.full_name || "")}</div>
               <div class="customer-balance">Borç: ${formatMoney(customer.balance || 0)} ₺</div>
-              <button class="detail-btn" onclick="event.stopPropagation(); openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)})">Cari Detay</button>
+              <div class="customer-mini">${escapeHtml(customer.phone || "Telefon yok")}</div>
+              <button class="detail-btn" onclick="event.stopPropagation(); openDetailModal('${customer.id}', '${escapeJs(customer.full_name || "")}', ${Number(customer.balance || 0)}, '${escapeJs(customer.phone || "")}', '${escapeJs(customer.address || "")}')">Cari Detay</button>
             </div>
             <div class="actions">
               <button class="sale" onclick="openTransactionModal('sale', '${customer.id}', '${escapeJs(customer.full_name || "")}')">Satış Yap</button>
@@ -1296,8 +1356,9 @@
     }
 
     async function addCustomer() {
-      const input = document.getElementById("newCustomerName");
-      const name = input.value.trim();
+      const name = document.getElementById("newCustomerName").value.trim();
+      const phone = document.getElementById("newCustomerPhone").value.trim();
+      const address = document.getElementById("newCustomerAddress").value.trim();
       const statusBar = document.getElementById("statusBar");
       const tenant = getSavedTenant();
 
@@ -1308,7 +1369,6 @@
 
       if (!name) {
         statusBar.innerText = "Müşteri adı boş bırakılamaz.";
-        input.focus();
         return;
       }
 
@@ -1321,6 +1381,8 @@
           body: JSON.stringify({
             tenant_id: tenant.tenant_id,
             full_name: name,
+            phone: phone || null,
+            address: address || null,
             balance: 0
           })
         });
@@ -1330,7 +1392,11 @@
           return;
         }
 
-        input.value = "";
+        document.getElementById("newCustomerName").value = "";
+        document.getElementById("newCustomerPhone").value = "";
+        document.getElementById("newCustomerAddress").value = "";
+        document.getElementById("customerFormBox").classList.add("hidden");
+
         statusBar.innerText = "Müşteri başarıyla eklendi.";
         fetchCustomers(tenant.tenant_id);
       } catch {
@@ -1428,17 +1494,19 @@
         await fetchCustomers(tenantId);
 
         if (!document.getElementById("detailModalBackdrop").classList.contains("hidden") && activeDetail.customerId === customerId) {
-          await openDetailModal(customerId, activeDetail.customerName, newBalance);
+          await openDetailModal(customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
         }
       } catch {
         statusBar.innerText = "İşlem sırasında bağlantı hatası oluştu.";
       }
     }
 
-    async function openDetailModal(customerId, customerName, balance) {
-      activeDetail = { customerId, customerName, balance };
+    async function openDetailModal(customerId, customerName, balance, phone = "", address = "") {
+      activeDetail = { customerId, customerName, balance, phone, address };
       document.getElementById("detailCustomerName").innerText = customerName;
       document.getElementById("detailCustomerBalance").innerText = `Borç: ${formatMoney(balance || 0)} ₺`;
+      document.getElementById("detailCustomerPhone").innerText = phone || "-";
+      document.getElementById("detailCustomerAddress").innerText = address || "-";
       document.getElementById("detailHistoryList").innerHTML = `<div class="detail-empty">İşlem geçmişi yükleniyor...</div>`;
       document.getElementById("detailModalBackdrop").classList.remove("hidden");
 
@@ -1475,12 +1543,42 @@
 
     function closeDetailModal() {
       document.getElementById("detailModalBackdrop").classList.add("hidden");
-      activeDetail = { customerId: null, customerName: "", balance: 0 };
+      activeDetail = { customerId: null, customerName: "", balance: 0, phone: "", address: "" };
+    }
+
+    function normalizePhoneForWhatsApp(phone) {
+      let digits = String(phone || "").replace(/\D/g, "");
+      if (!digits) return "";
+
+      if (digits.startsWith("90")) return digits;
+      if (digits.startsWith("0")) return "90" + digits.substring(1);
+      if (digits.length === 10) return "90" + digits;
+      return digits;
+    }
+
+    function sendCustomerWhatsApp() {
+      const normalized = normalizePhoneForWhatsApp(activeDetail.phone);
+
+      if (!normalized) {
+        alert("Bu müşteride kayıtlı telefon numarası yok.");
+        return;
+      }
+
+      const text =
+`Merhaba ${activeDetail.customerName},
+${document.getElementById("detailCustomerBalance").innerText}
+
+DML VERESİYE9 üzerinden borç bilgilendirmesi yapılmıştır.`;
+
+      const waUrl = `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, "_blank");
     }
 
     function printCustomerDetail() {
       const name = document.getElementById("detailCustomerName").innerText;
       const balance = document.getElementById("detailCustomerBalance").innerText;
+      const phone = document.getElementById("detailCustomerPhone").innerText;
+      const address = document.getElementById("detailCustomerAddress").innerText;
       const history = document.getElementById("detailHistoryList").innerHTML;
 
       const printWindow = window.open("", "", "width=900,height=700");
@@ -1502,7 +1600,12 @@
             .balance{
               font-size:20px;
               font-weight:700;
+              margin-bottom:16px;
+            }
+            .info{
               margin-bottom:20px;
+              line-height:1.6;
+              color:#4b5563;
             }
             .history-item{
               border:1px solid #ddd;
@@ -1532,6 +1635,10 @@
         <body>
           <h1>${name}</h1>
           <div class="balance">${balance}</div>
+          <div class="info">
+            <div><strong>İletişim:</strong> ${phone}</div>
+            <div><strong>Adres:</strong> ${address}</div>
+          </div>
           ${history}
         </body>
         </html>
@@ -1547,6 +1654,8 @@
       const doc = new jsPDF();
       const detailName = document.getElementById("detailCustomerName").innerText || "Cari Detay";
       const detailBalance = document.getElementById("detailCustomerBalance").innerText || "";
+      const detailPhone = document.getElementById("detailCustomerPhone").innerText || "-";
+      const detailAddress = document.getElementById("detailCustomerAddress").innerText || "-";
       const items = Array.from(document.querySelectorAll("#detailHistoryList .history-item"));
 
       let y = 20;
@@ -1555,6 +1664,9 @@
       doc.setFontSize(14);
       doc.text(detailName, 14, y); y += 8;
       doc.text(detailBalance, 14, y); y += 8;
+      doc.setFontSize(10);
+      doc.text(`Iletisim: ${detailPhone}`.slice(0, 90), 14, y); y += 6;
+      doc.text(`Adres: ${detailAddress}`.slice(0, 90), 14, y); y += 10;
 
       items.forEach((item, index) => {
         const type = item.querySelector(".history-type")?.innerText || "";
@@ -1696,7 +1808,7 @@
         const tenant = getSavedTenant();
         if (tenant) await fetchCustomers(tenant.tenant_id);
 
-        await openDetailModal(editingTransaction.customerId, activeDetail.customerName, newBalance);
+        await openDetailModal(editingTransaction.customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
       } catch {
         statusBar.innerText = "İşlem düzenlenirken bağlantı hatası oluştu.";
       }
@@ -1745,7 +1857,7 @@
         const tenant = getSavedTenant();
         if (tenant) await fetchCustomers(tenant.tenant_id);
 
-        await openDetailModal(activeDetail.customerId, activeDetail.customerName, newBalance);
+        await openDetailModal(activeDetail.customerId, activeDetail.customerName, newBalance, activeDetail.phone, activeDetail.address);
       } catch {
         statusBar.innerText = "İşlem silinirken bağlantı hatası oluştu.";
       }
@@ -2168,10 +2280,13 @@
       document.getElementById("user").value = "";
       document.getElementById("pass").value = "";
       document.getElementById("newCustomerName").value = "";
+      document.getElementById("newCustomerPhone").value = "";
+      document.getElementById("newCustomerAddress").value = "";
       document.getElementById("cards").innerHTML = "";
       document.getElementById("statusBar").innerText = "";
       document.getElementById("cashStatusBar").innerText = "";
       document.getElementById("settingsStatusBar").innerText = "";
+      document.getElementById("customerFormBox").classList.add("hidden");
       closeTransactionModal();
       closeDetailModal();
       closeEditTransactionModal();
