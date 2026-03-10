@@ -1229,6 +1229,16 @@
       }
     }
 
+    function getCurrentCompanyName() {
+      const settingsInput = document.getElementById("settingCompanyName");
+      const headerName = document.getElementById("companyName");
+
+      const settingsValue = settingsInput ? settingsInput.value.trim() : "";
+      const headerValue = headerName ? headerName.innerText.trim() : "";
+
+      return settingsValue || headerValue || "Firma";
+    }
+
     async function login() {
       const user = document.getElementById("user").value.trim();
       const pass = document.getElementById("pass").value.trim();
@@ -1564,11 +1574,13 @@
         return;
       }
 
+      const companyName = getCurrentCompanyName();
+
       const text =
 `Merhaba ${activeDetail.customerName},
 ${document.getElementById("detailCustomerBalance").innerText}
 
-DML VERESİYE9 üzerinden borç bilgilendirmesi yapılmıştır.`;
+${companyName} üzerinden borç bilgilendirmesi yapılmıştır.`;
 
       const waUrl = `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
       window.open(waUrl, "_blank");
