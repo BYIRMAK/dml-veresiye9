@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DML VERESİYE9 - Lisans Paneli</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f5f7;
+      color: #1f2937;
+    }
+
+    .hidden { display: none !important; }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
+    }
+
+    .login-card,
+    .panel-card {
+      width: 100%;
+      max-width: 1180px;
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .login-card {
+      max-width: 430px;
+    }
+
+    .top,
+    .header {
+      background: linear-gradient(135deg, #0f5f54 0%, #146c60 100%);
+      color: white;
+    }
+
+    .top {
+      padding: 30px 24px 24px 24px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    .sub {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus, select:focus {
+      border-color: #0f5f54;
+      box-shadow: 0 0 0 3px rgba(15, 95, 84, 0.12);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s ease;
+    }
+
+    .login-btn,
+    .primary-btn {
+      background: #ff7a00;
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 122, 0, 0.20);
+    }
+
+    .secondary-btn,
+    .logout-btn {
+      background: #0f5f54;
+      color: white;
+      box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+    }
+
+    .danger-btn {
+      background: #b91c1c;
+      color: white;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
+    }
+
+    .login-btn,
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn,
+    .logout-btn {
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .login-btn,
+    .primary-btn {
+      width: 100%;
+    }
+
+    .login-btn:hover,
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover,
+    .logout-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.97;
+    }
+
+    .msg {
+      margin-top: 12px;
+      min-height: 20px;
+      font-size: 14px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .ok { color: #0f5f54; }
+    .err { color: #b91c1c; }
+
+    .info {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .header-chip {
+      background: rgba(255,255,255,0.12);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .main {
+      padding: 24px;
+      background: #edf1f3;
+      min-height: 100vh;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      padding: 18px;
+    }
+
+    .box-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f5f54;
+      margin-bottom: 14px;
+    }
+
+    .status-bar {
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #6b7280;
+    }
+
+    .tenant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .tenant-card {
+      position: relative;
+      overflow: hidden;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      padding: 18px;
+    }
+
+    .tenant-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #0f5f54 0%, #ff7a00 100%);
+    }
+
+    .tenant-name {
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+
+    .tenant-line {
+      font-size: 14px;
+      color: #4b5563;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-right: 6px;
+      margin-bottom: 8px;
+    }
+
+    .badge.demo {
+      background: #fff1e6;
+      color: #ff7a00;
+    }
+
+    .badge.paid {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .badge.active {
+      background: #eaf7f3;
+      color: #0f5f54;
+    }
+
+    .badge.passive {
+      background: #fff1f2;
+      color: #b91c1c;
+    }
+
+    .tenant-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .small-btn {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .empty-box {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 22px;
+      color: #6b7280;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+    }
+
+    .quick-note {
+      background: #f9fafb;
+      border: 1px solid #eceff3;
+      border-radius: 14px;
+      padding: 14px;
+      color: #4b5563;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        align-items: flex-start;
+      }
+
+      .header-title {
+        font-size: 24px;
+      }
+
+      .tenant-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="adminLoginScreen" class="app">
+    <div class="login-card">
+      <div class="top">
+        <div class="brand-row">
+          <img src="/logo.png" alt="DML Logo" class="brand-logo" onerror="this.style.display='none'">
+          <div>
+            <h1 class="brand">DML VERESİYE9</h1>
+            <p class="sub">Lisans yönetim paneli</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <label for="adminEmail">Admin E-posta</label>
+        <input id="adminEmail" type="email" placeholder="Admin e-posta" />
+
+        <label for="adminPassword">Şifre</label>
+        <input id="adminPassword" type="password" placeholder="Şifre" />
+
+        <button class="login-btn" onclick="adminLogin()">Lisans Paneline Giriş</button>
+        <div id="adminLoginMsg" class="msg"></div>
+
+        <div class="info">İletişim: 0 541 465 66 22</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="adminPanelScreen" class="hidden">
+    <div class="header">
+      <div class="header-title">DML VERESİYE9 - Lisans Paneli</div>
+      <div class="header-right">
+        <div class="header-chip">Admin: <span id="adminEmailText">-</span></div>
+        <button class="logout-btn" onclick="adminLogout()">Çıkış Yap</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="grid-2">
+        <div class="box">
+          <div class="box-title">Yeni Firma / Lisans Oluştur</div>
+
+          <label for="tenantCompanyName">Firma Adı</label>
+          <input id="tenantCompanyName" type="text" placeholder="Örn: Kaya Market" />
+
+          <label for="tenantUserCode">Kullanıcı Kodu</label>
+          <input id="tenantUserCode" type="text" placeholder="Örn: kaya01" />
+
+          <label for="tenantPassword">Şifre</label>
+          <input id="tenantPassword" type="text" placeholder="Şifre" />
+
+          <label for="tenantLicenseCode">Lisans Kodu</label>
+          <input id="tenantLicenseCode" type="text" placeholder="Örn: DML-10025" />
+
+          <label for="tenantLicenseType">Lisans Türü</label>
+          <select id="tenantLicenseType">
+            <option value="demo">Demo</option>
+            <option value="paid">Lisanslı</option>
+          </select>
+
+          <label for="tenantLicenseStart">Başlangıç Tarihi</label>
+          <input id="tenantLicenseStart" type="date" />
+
+          <label for="tenantLicenseEnd">Bitiş Tarihi</label>
+          <input id="tenantLicenseEnd" type="date" />
+
+          <button class="primary-btn" onclick="createTenant()">Firmayı Oluştur</button>
+
+          <div id="tenantStatusBar" class="status-bar"></div>
+
+          <div class="quick-note" style="margin-top:14px;">
+            Oluşturulan firma müşteri paneline kendi kullanıcı kodu ve şifresi ile giriş yapar.
+            Müşteri giriş linki şu şekildedir:
+            <strong id="customerPanelLinkText">-</strong>
+          </div>
+        </div>
+
+        <div>
+          <div class="box" style="margin-bottom:18px;">
+            <div class="box-title">Lisanslı Firmalar</div>
+            <div id="tenantsList" class="tenant-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
+
+    function getHeaders(extra = {}) {
+      return {
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        "Content-Type": "application/json",
+        ...extra
+      };
+    }
+
+    function generateLicenseCode() {
+      return "DML-" + Math.floor(10000 + Math.random() * 90000);
+    }
+
+    function setDefaultDates() {
+      const today = new Date();
+      const end = new Date();
+      end.setDate(today.getDate() + 30);
+
+      document.getElementById("tenantLicenseStart").value = today.toISOString().split("T")[0];
+      document.getElementById("tenantLicenseEnd").value = end.toISOString().split("T")[0];
+      document.getElementById("tenantLicenseCode").value = generateLicenseCode();
+    }
+
+    async function adminLogin() {
+      const email = document.getElementById("adminEmail").value.trim();
+      const password = document.getElementById("adminPassword").value.trim();
+      const msg = document.getElementById("adminLoginMsg");
+
+      msg.className = "msg";
+      msg.innerText = "Giriş kontrol ediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_login`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            p_email: email,
+            p_password: password
+          })
+        });
+
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          localStorage.setItem("dml_admin_user", JSON.stringify(data[0]));
+          msg.className = "msg ok";
+          msg.innerText = "Giriş başarılı";
+          openAdminPanel(data[0]);
+        } else {
+          msg.className = "msg err";
+          msg.innerText = "Hatalı admin bilgileri";
+        }
+      } catch (error) {
+        msg.className = "msg err";
+        msg.innerText = "Bağlantı hatası oluştu";
+      }
+    }
+
+    function getSavedAdmin() {
+      const saved = localStorage.getItem("dml_admin_user");
+      if (!saved) return null;
+      try {
+        return JSON.parse(saved);
+      } catch {
+        localStorage.removeItem("dml_admin_user");
+        return null;
+      }
+    }
+
+    function openAdminPanel(admin) {
+      document.getElementById("adminLoginScreen").classList.add("hidden");
+      document.getElementById("adminPanelScreen").classList.remove("hidden");
+      document.getElementById("adminEmailText").innerText = admin.email || "-";
+      document.getElementById("customerPanelLinkText").innerText = window.location.origin;
+      setDefaultDates();
+      loadTenants();
+    }
+
+    function adminLogout() {
+      localStorage.removeItem("dml_admin_user");
+      document.getElementById("adminPanelScreen").classList.add("hidden");
+      document.getElementById("adminLoginScreen").classList.remove("hidden");
+      document.getElementById("adminLoginMsg").innerText = "";
+      document.getElementById("adminEmail").value = "";
+      document.getElementById("adminPassword").value = "";
+    }
+
+    async function createTenant() {
+      const statusBar = document.getElementById("tenantStatusBar");
+
+      const company_name = document.getElementById("tenantCompanyName").value.trim();
+      const user_code = document.getElementById("tenantUserCode").value.trim();
+      const password_hash = document.getElementById("tenantPassword").value.trim();
+      const license_code = document.getElementById("tenantLicenseCode").value.trim();
+      const license_type = document.getElementById("tenantLicenseType").value;
+      const license_start_date = document.getElementById("tenantLicenseStart").value;
+      const license_end_date = document.getElementById("tenantLicenseEnd").value;
+
+      if (!company_name || !user_code || !password_hash || !license_code || !license_start_date || !license_end_date) {
+        statusBar.innerText = "Tüm alanları doldur.";
+        return;
+      }
+
+      statusBar.innerText = "Firma oluşturuluyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants`, {
+          method: "POST",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            company_name,
+            license_code,
+            user_code,
+            password_hash,
+            is_active: true,
+            license_type,
+            license_start_date,
+            license_end_date
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          console.error(err);
+          statusBar.innerText = "Firma oluşturulamadı. Kullanıcı kodu veya lisans kodu zaten kayıtlı olabilir.";
+          return;
+        }
+
+        statusBar.innerText = "Firma başarıyla oluşturuldu.";
+
+        document.getElementById("tenantCompanyName").value = "";
+        document.getElementById("tenantUserCode").value = "";
+        document.getElementById("tenantPassword").value = "";
+        setDefaultDates();
+
+        loadTenants();
+      } catch (error) {
+        statusBar.innerText = "Bağlantı hatası oluştu.";
+      }
+    }
+
+    async function loadTenants() {
+      const list = document.getElementById("tenantsList");
+      list.innerHTML = `<div class="empty-box">Firmalar yükleniyor...</div>`;
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?select=id,company_name,license_code,user_code,is_active,license_type,license_start_date,license_end_date&order=created_at.desc`, {
+          method: "GET",
+          headers: getHeaders()
+        });
+
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          list.innerHTML = `<div class="empty-box">Henüz firma oluşturulmamış.</div>`;
+          return;
+        }
+
+        list.innerHTML = data.map(item => {
+          const remainingDays = calculateRemainingDays(item.license_end_date);
+          const loginLink = window.location.origin;
+
+          return `
+            <div class="tenant-card">
+              <div class="tenant-name">${escapeHtml(item.company_name || "-")}</div>
+
+              <div>
+                <span class="badge ${item.license_type === "paid" ? "paid" : "demo"}">${item.license_type === "paid" ? "Lisanslı" : "Demo"}</span>
+                <span class="badge ${item.is_active ? "active" : "passive"}">${item.is_active ? "Aktif" : "Pasif"}</span>
+              </div>
+
+              <div class="tenant-line"><strong>Kullanıcı:</strong> ${escapeHtml(item.user_code || "-")}</div>
+              <div class="tenant-line"><strong>Lisans:</strong> ${escapeHtml(item.license_code || "-")}</div>
+              <div class="tenant-line"><strong>Başlangıç:</strong> ${formatOnlyDate(item.license_start_date)}</div>
+              <div class="tenant-line"><strong>Bitiş:</strong> ${formatOnlyDate(item.license_end_date)}</div>
+              <div class="tenant-line"><strong>Kalan Gün:</strong> ${remainingDays}</div>
+              <div class="tenant-line"><strong>Müşteri Linki:</strong> ${loginLink}</div>
+
+              <div class="tenant-actions">
+                <button class="secondary-btn small-btn" onclick="toggleTenantStatus('${item.id}', ${item.is_active})">
+                  ${item.is_active ? "Pasife Al" : "Aktif Yap"}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (error) {
+        list.innerHTML = `<div class="empty-box">Firmalar yüklenemedi.</div>`;
+      }
+    }
+
+    async function toggleTenantStatus(id, currentStatus) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${id}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify({
+            is_active: !currentStatus
+          })
+        });
+
+        if (!res.ok) {
+          alert("Durum değiştirilemedi.");
+          return;
+        }
+
+        loadTenants();
+      } catch (error) {
+        alert("Bağlantı hatası oluştu.");
+      }
+    }
+
+    function calculateRemainingDays(endDate) {
+      if (!endDate) return "-";
+      const today = new Date();
+      const end = new Date(endDate);
+      today.setHours(0,0,0,0);
+      end.setHours(0,0,0,0);
+      const diff = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+      return diff < 0 ? 0 : diff;
+    }
+
+    function formatOnlyDate(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return date.toLocaleDateString("tr-TR");
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    window.onload = function () {
+      const admin = getSavedAdmin();
+      if (admin) {
+        openAdminPanel(admin);
+      } else {
+        setDefaultDates();
+      }
+    };
+  </script>
+</body>
+</html>
