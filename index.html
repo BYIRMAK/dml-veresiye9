@@ -113,7 +113,9 @@
     .logout:hover,
     .action-btn:hover,
     .close-btn:hover,
-    .detail-btn:hover {
+    .detail-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -425,6 +427,7 @@
       display: flex;
       gap: 10px;
       margin-top: 6px;
+      flex-wrap: wrap;
     }
 
     .action-btn {
@@ -447,6 +450,26 @@
       font-size: 15px;
       font-weight: 700;
       box-shadow: 0 8px 18px rgba(15, 95, 84, 0.16);
+    }
+
+    .secondary-btn {
+      background: #eef6f4;
+      color: #0f5f54;
+      border: 1px solid #d8e8e3;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .danger-btn {
+      background: #b91c1c;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
     }
 
     .detail-modal {
@@ -488,6 +511,13 @@
       max-height: 70vh;
       overflow-y: auto;
       background: #f8fafb;
+    }
+
+    .detail-tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
 
     .history-list {
@@ -559,6 +589,26 @@
       border: 1px solid #e5e7eb;
       color: #6b7280;
       box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printArea, #printArea * {
+        visibility: visible;
+      }
+
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white;
+        color: black;
+        padding: 24px;
+      }
     }
 
     @media (max-width: 700px) {
@@ -691,7 +741,12 @@
         <div class="detail-balance" id="detailCustomerBalance">Borç: 0 ₺</div>
         <button class="logout" onclick="closeDetailModal()">Kapat</button>
       </div>
-      <div class="detail-body">
+      <div class="detail-body" id="printArea">
+        <div class="detail-tools">
+          <button class="secondary-btn" onclick="printDetail()">Yazdır</button>
+          <button class="secondary-btn" onclick="downloadDetailPdf()">PDF Aktar</button>
+          <button class="danger-btn" onclick="deleteCustomer()">Müşteriyi Sil</button>
+        </div>
         <div id="detailHistoryList" class="history-list"></div>
       </div>
     </div>
@@ -1083,6 +1138,97 @@
       };
     }
 
+    function printDetail() {
+      window.print();
+    }
+
+    function downloadDetailPdf() {
+      const detailName = document.getElementById("detailCustomerName").innerText || "Cari Detay";
+      const detailBalance = document.getElementById("detailCustomerBalance").innerText || "";
+      const items = Array.from(document.querySelectorAll("#detailHistoryList .history-item"));
+
+      let content = `
+DML VERESİYE9
+${detailName}
+${detailBalance}
+
+İŞLEM GEÇMİŞİ
+----------------------------------------
+`;
+
+      if (items.length === 0) {
+        content += "İşlem geçmişi bulunamadı.\n";
+      } else {
+        items.forEach((item, index) => {
+          const type = item.querySelector(".history-type")?.innerText || "";
+          const amount = item.querySelector(".history-amount")?.innerText || "";
+          const desc = item.querySelector(".history-desc")?.innerText || "";
+          const date = item.querySelector(".history-date")?.innerText || "";
+
+          content += `
+${index + 1}. ${type}
+Tutar: ${amount}
+Açıklama: ${desc}
+Tarih: ${date}
+----------------------------------------
+`;
+        });
+      }
+
+      const blob = new Blob([content], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${detailName.replaceAll(" ", "_")}_cari_detay.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function deleteCustomer() {
+      const statusBar = document.getElementById("statusBar");
+
+      if (!activeDetail.customerId) {
+        statusBar.innerText = "Silinecek müşteri seçilemedi.";
+        return;
+      }
+
+      const ok = confirm(`${activeDetail.customerName} müşterisini silmek istediğine emin misin?`);
+      if (!ok) return;
+
+      statusBar.innerText = "Müşteri siliniyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${activeDetail.customerId}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          statusBar.innerText = "Müşteri silinemedi.";
+          console.error(errorText);
+          return;
+        }
+
+        statusBar.innerText = "Müşteri başarıyla silindi.";
+        closeDetailModal();
+
+        const savedUser = localStorage.getItem("dml_user");
+        if (savedUser) {
+          const tenant = JSON.parse(savedUser);
+          fetchCustomers(tenant.tenant_id);
+        }
+      } catch (error) {
+        statusBar.innerText = "Müşteri silinirken bağlantı hatası oluştu.";
+      }
+    }
+
     function openPanel(tenant) {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("panelScreen").classList.remove("hidden");
@@ -1114,6 +1260,16 @@
       document.getElementById("statusBar").innerText = "";
       closeTransactionModal();
       closeDetailModal();
+    }
+
+    function closeTransactionModal() {
+      document.getElementById("transactionModal").classList.add("hidden");
+      activeTransaction = {
+        customerId: null,
+        customerName: "",
+        tenantId: null,
+        type: null
+      };
     }
 
     function formatMoney(value) {
