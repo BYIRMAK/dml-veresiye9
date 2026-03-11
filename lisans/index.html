@@ -26,10 +26,9 @@
       background: linear-gradient(135deg, #eef3f2 0%, #f7f7f7 100%);
     }
 
-    .login-card,
-    .panel-card {
+    .login-card {
       width: 100%;
-      max-width: 1180px;
+      max-width: 430px;
       background: #ffffff;
       border-radius: 22px;
       box-shadow: 0 18px 45px rgba(0, 0, 0, 0.10);
@@ -37,13 +36,7 @@
       border: 1px solid #e5e7eb;
     }
 
-    .login-card {
-      max-width: 430px;
-    }
-
-    .top,
-    .header,
-    .modal-head {
+    .top, .header, .modal-head {
       background: linear-gradient(135deg, #0f5f54 0%, #146c60 100%);
       color: white;
     }
@@ -891,37 +884,13 @@ Müşteri Giriş Linki: ${window.location.origin}`;
 
       if (!confirm("Bu firmayı silmek istediğine emin misin? Firma tamamen silinir.")) return;
 
-      status.innerText = "Firmaya bağlı kayıtlar ve firma siliniyor...";
+      status.innerText = "Firma tamamen siliniyor...";
 
       try {
-        // 1) Müşteri işlemleri
-        await fetch(`${SUPABASE_URL}/rest/v1/customer_transactions?tenant_id=eq.${id}`, {
-          method: "DELETE",
-          headers: getHeaders()
-        });
-
-        // 2) Kasa işlemleri
-        await fetch(`${SUPABASE_URL}/rest/v1/cash_transactions?tenant_id=eq.${id}`, {
-          method: "DELETE",
-          headers: getHeaders()
-        });
-
-        // 3) İşletme ayarları
-        await fetch(`${SUPABASE_URL}/rest/v1/business_settings?tenant_id=eq.${id}`, {
-          method: "DELETE",
-          headers: getHeaders()
-        });
-
-        // 4) Müşteriler
-        await fetch(`${SUPABASE_URL}/rest/v1/customers?tenant_id=eq.${id}`, {
-          method: "DELETE",
-          headers: getHeaders()
-        });
-
-        // 5) Firma
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${id}`, {
-          method: "DELETE",
-          headers: getHeaders()
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/dml_delete_tenant_full`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ p_tenant_id: id })
         });
 
         if (!res.ok) {
