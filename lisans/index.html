@@ -42,7 +42,8 @@
     }
 
     .top,
-    .header {
+    .header,
+    .modal-head {
       background: linear-gradient(135deg, #0f5f54 0%, #146c60 100%);
       color: white;
     }
@@ -135,11 +136,18 @@
       box-shadow: 0 8px 18px rgba(185, 28, 28, 0.18);
     }
 
+    .gray-btn {
+      background: #6b7280;
+      color: white;
+      box-shadow: 0 8px 18px rgba(107, 114, 128, 0.18);
+    }
+
     .login-btn,
     .primary-btn,
     .secondary-btn,
     .danger-btn,
-    .logout-btn {
+    .logout-btn,
+    .gray-btn {
       padding: 14px 16px;
       border-radius: 12px;
       font-size: 15px;
@@ -155,7 +163,8 @@
     .primary-btn:hover,
     .secondary-btn:hover,
     .danger-btn:hover,
-    .logout-btn:hover {
+    .logout-btn:hover,
+    .gray-btn:hover {
       transform: translateY(-1px);
       opacity: 0.97;
     }
@@ -246,7 +255,7 @@
 
     .tenant-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
     }
 
@@ -283,6 +292,7 @@
       color: #4b5563;
       margin-bottom: 8px;
       word-break: break-word;
+      line-height: 1.5;
     }
 
     .badge {
@@ -361,6 +371,56 @@
       white-space: pre-line;
     }
 
+    .search-box {
+      margin-bottom: 18px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .modal-head {
+      padding: 18px 20px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     @media (max-width: 980px) {
       .grid-2 {
         grid-template-columns: 1fr;
@@ -376,7 +436,8 @@
         font-size: 24px;
       }
 
-      .tenant-grid {
+      .tenant-grid,
+      .form-grid-2 {
         grid-template-columns: 1fr;
       }
     }
@@ -398,10 +459,10 @@
 
       <div class="content">
         <label for="adminEmail">Admin E-posta</label>
-        <input id="adminEmail" type="email" placeholder="Admin e-posta" />
+        <input id="adminEmail" type="email" placeholder="Admin e-posta">
 
         <label for="adminPassword">Şifre</label>
-        <input id="adminPassword" type="password" placeholder="Şifre" />
+        <input id="adminPassword" type="password" placeholder="Şifre">
 
         <button class="login-btn" onclick="adminLogin()">Lisans Paneline Giriş</button>
         <div id="adminLoginMsg" class="msg"></div>
@@ -426,10 +487,10 @@
           <div class="box-title">Yeni Firma / Lisans Oluştur</div>
 
           <label for="tenantCompanyName">Firma Adı</label>
-          <input id="tenantCompanyName" type="text" placeholder="Örn: Kaya Market" />
+          <input id="tenantCompanyName" type="text" placeholder="Örn: Kaya Market">
 
           <label for="tenantPassword">Şifre</label>
-          <input id="tenantPassword" type="text" placeholder="Boş bırakırsan sistem üretir" />
+          <input id="tenantPassword" type="text" placeholder="Boş bırakırsan sistem üretir">
 
           <label for="tenantLicenseType">Lisans Türü</label>
           <select id="tenantLicenseType">
@@ -456,6 +517,12 @@
         <div>
           <div class="box" style="margin-bottom:18px;">
             <div class="box-title">Lisanslı Firmalar</div>
+
+            <div class="search-box">
+              <label for="tenantSearchInput">Müşteri Ara</label>
+              <input id="tenantSearchInput" type="text" placeholder="Firma adı, kullanıcı kodu, lisans kodu ara..." oninput="renderTenants()">
+            </div>
+
             <div id="tenantsList" class="tenant-grid"></div>
           </div>
         </div>
@@ -463,9 +530,76 @@
     </div>
   </div>
 
+  <div id="editTenantModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-head">Firma Bilgileri / Düzenle</div>
+      <div class="modal-body">
+        <input type="hidden" id="editTenantId">
+
+        <div class="form-grid-2">
+          <div>
+            <label for="editCompanyName">Firma Adı</label>
+            <input id="editCompanyName" type="text" placeholder="Firma adı">
+          </div>
+
+          <div>
+            <label for="editUserCode">Kullanıcı Kodu</label>
+            <input id="editUserCode" type="text" placeholder="Kullanıcı kodu">
+          </div>
+
+          <div>
+            <label for="editPasswordHash">Şifre</label>
+            <input id="editPasswordHash" type="text" placeholder="Şifre">
+          </div>
+
+          <div>
+            <label for="editLicenseCode">Lisans Kodu</label>
+            <input id="editLicenseCode" type="text" placeholder="Lisans kodu">
+          </div>
+
+          <div>
+            <label for="editLicenseType">Lisans Türü</label>
+            <select id="editLicenseType">
+              <option value="demo">Demo</option>
+              <option value="paid">Lisanslı</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="editIsActive">Durum</label>
+            <select id="editIsActive">
+              <option value="true">Aktif</option>
+              <option value="false">Pasif</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="editLicenseStartDate">Başlangıç Tarihi</label>
+            <input id="editLicenseStartDate" type="date">
+          </div>
+
+          <div>
+            <label for="editLicenseEndDate">Bitiş Tarihi</label>
+            <input id="editLicenseEndDate" type="date">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="primary-btn" style="width:auto;" onclick="saveTenantChanges()">Kaydet</button>
+          <button class="danger-btn" onclick="deleteTenant()">Firmayı Sil</button>
+          <button class="gray-btn" onclick="closeEditTenantModal()">Kapat</button>
+        </div>
+
+        <div id="editTenantStatus" class="status-bar"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = "https://rkvjlxlkgxfrmocnizfe.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_iXGWXgBgvIpgSDDc7e0RlQ_ehtfQY_u";
+
+    let tenantsCache = [];
 
     function getHeaders(extra = {}) {
       return {
@@ -605,48 +739,176 @@ Müşteri Giriş Linki: ${window.location.origin}`;
       list.innerHTML = `<div class="empty-box">Firmalar yükleniyor...</div>`;
 
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?select=id,company_name,license_code,user_code,is_active,license_type,license_start_date,license_end_date&order=created_at.desc`, {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?select=id,company_name,license_code,user_code,password_hash,is_active,license_type,license_start_date,license_end_date&order=created_at.desc`, {
           method: "GET",
           headers: getHeaders()
         });
 
         const data = await res.json();
+        tenantsCache = Array.isArray(data) ? data : [];
+        renderTenants();
+      } catch (error) {
+        list.innerHTML = `<div class="empty-box">Firmalar yüklenemedi.</div>`;
+      }
+    }
 
-        if (!Array.isArray(data) || data.length === 0) {
-          list.innerHTML = `<div class="empty-box">Henüz firma oluşturulmamış.</div>`;
+    function renderTenants() {
+      const list = document.getElementById("tenantsList");
+      const search = (document.getElementById("tenantSearchInput")?.value || "").trim().toLowerCase();
+
+      let filtered = tenantsCache;
+
+      if (search) {
+        filtered = tenantsCache.filter(item => {
+          const company = String(item.company_name || "").toLowerCase();
+          const userCode = String(item.user_code || "").toLowerCase();
+          const licenseCode = String(item.license_code || "").toLowerCase();
+          const password = String(item.password_hash || "").toLowerCase();
+
+          return company.includes(search) ||
+                 userCode.includes(search) ||
+                 licenseCode.includes(search) ||
+                 password.includes(search);
+        });
+      }
+
+      if (!filtered.length) {
+        list.innerHTML = `<div class="empty-box">Aramana uygun firma bulunamadı.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(item => {
+        const remainingDays = calculateRemainingDays(item.license_end_date);
+        const loginLink = window.location.origin;
+
+        return `
+          <div class="tenant-card">
+            <div class="tenant-name">${escapeHtml(item.company_name || "-")}</div>
+
+            <div>
+              <span class="badge ${item.license_type === "paid" ? "paid" : "demo"}">${item.license_type === "paid" ? "Lisanslı" : "Demo"}</span>
+              <span class="badge ${item.is_active ? "active" : "passive"}">${item.is_active ? "Aktif" : "Pasif"}</span>
+            </div>
+
+            <div class="tenant-line"><strong>Kullanıcı:</strong> ${escapeHtml(item.user_code || "-")}</div>
+            <div class="tenant-line"><strong>Şifre:</strong> ${escapeHtml(item.password_hash || "-")}</div>
+            <div class="tenant-line"><strong>Lisans:</strong> ${escapeHtml(item.license_code || "-")}</div>
+            <div class="tenant-line"><strong>Başlangıç:</strong> ${formatOnlyDate(item.license_start_date)}</div>
+            <div class="tenant-line"><strong>Bitiş:</strong> ${formatOnlyDate(item.license_end_date)}</div>
+            <div class="tenant-line"><strong>Kalan Gün:</strong> ${remainingDays}</div>
+            <div class="tenant-line"><strong>Müşteri Linki:</strong> ${loginLink}</div>
+
+            <div class="tenant-actions">
+              <button class="secondary-btn small-btn" onclick="openEditTenantModal('${item.id}')">Müşteri Bilgilerini Aç</button>
+              <button class="secondary-btn small-btn" onclick="toggleTenantStatus('${item.id}', ${item.is_active})">
+                ${item.is_active ? "Pasife Al" : "Aktif Yap"}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openEditTenantModal(id) {
+      const tenant = tenantsCache.find(x => x.id === id);
+      if (!tenant) return;
+
+      document.getElementById("editTenantId").value = tenant.id || "";
+      document.getElementById("editCompanyName").value = tenant.company_name || "";
+      document.getElementById("editUserCode").value = tenant.user_code || "";
+      document.getElementById("editPasswordHash").value = tenant.password_hash || "";
+      document.getElementById("editLicenseCode").value = tenant.license_code || "";
+      document.getElementById("editLicenseType").value = tenant.license_type || "demo";
+      document.getElementById("editIsActive").value = String(tenant.is_active);
+      document.getElementById("editLicenseStartDate").value = tenant.license_start_date || "";
+      document.getElementById("editLicenseEndDate").value = tenant.license_end_date || "";
+      document.getElementById("editTenantStatus").innerText = "";
+
+      document.getElementById("editTenantModal").classList.remove("hidden");
+    }
+
+    function closeEditTenantModal() {
+      document.getElementById("editTenantModal").classList.add("hidden");
+      document.getElementById("editTenantStatus").innerText = "";
+    }
+
+    async function saveTenantChanges() {
+      const status = document.getElementById("editTenantStatus");
+      const id = document.getElementById("editTenantId").value.trim();
+
+      const payload = {
+        company_name: document.getElementById("editCompanyName").value.trim(),
+        user_code: document.getElementById("editUserCode").value.trim(),
+        password_hash: document.getElementById("editPasswordHash").value.trim(),
+        license_code: document.getElementById("editLicenseCode").value.trim(),
+        license_type: document.getElementById("editLicenseType").value,
+        is_active: document.getElementById("editIsActive").value === "true",
+        license_start_date: document.getElementById("editLicenseStartDate").value || null,
+        license_end_date: document.getElementById("editLicenseEndDate").value || null
+      };
+
+      if (!id) {
+        status.innerText = "Firma seçilemedi.";
+        return;
+      }
+
+      if (!payload.company_name || !payload.user_code || !payload.password_hash || !payload.license_code) {
+        status.innerText = "Boş bırakılamayan alanlar var.";
+        return;
+      }
+
+      status.innerText = "Bilgiler kaydediliyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${id}`, {
+          method: "PATCH",
+          headers: getHeaders({ "Prefer": "return=representation" }),
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error(errText);
+          status.innerText = "Kayıt güncellenemedi. Kullanıcı kodu veya lisans kodu başka firmada olabilir.";
           return;
         }
 
-        list.innerHTML = data.map(item => {
-          const remainingDays = calculateRemainingDays(item.license_end_date);
-          const loginLink = window.location.origin;
-
-          return `
-            <div class="tenant-card">
-              <div class="tenant-name">${escapeHtml(item.company_name || "-")}</div>
-
-              <div>
-                <span class="badge ${item.license_type === "paid" ? "paid" : "demo"}">${item.license_type === "paid" ? "Lisanslı" : "Demo"}</span>
-                <span class="badge ${item.is_active ? "active" : "passive"}">${item.is_active ? "Aktif" : "Pasif"}</span>
-              </div>
-
-              <div class="tenant-line"><strong>Kullanıcı:</strong> ${escapeHtml(item.user_code || "-")}</div>
-              <div class="tenant-line"><strong>Lisans:</strong> ${escapeHtml(item.license_code || "-")}</div>
-              <div class="tenant-line"><strong>Başlangıç:</strong> ${formatOnlyDate(item.license_start_date)}</div>
-              <div class="tenant-line"><strong>Bitiş:</strong> ${formatOnlyDate(item.license_end_date)}</div>
-              <div class="tenant-line"><strong>Kalan Gün:</strong> ${remainingDays}</div>
-              <div class="tenant-line"><strong>Müşteri Linki:</strong> ${loginLink}</div>
-
-              <div class="tenant-actions">
-                <button class="secondary-btn small-btn" onclick="toggleTenantStatus('${item.id}', ${item.is_active})">
-                  ${item.is_active ? "Pasife Al" : "Aktif Yap"}
-                </button>
-              </div>
-            </div>
-          `;
-        }).join("");
+        status.innerText = "Firma bilgileri başarıyla güncellendi.";
+        await loadTenants();
       } catch (error) {
-        list.innerHTML = `<div class="empty-box">Firmalar yüklenemedi.</div>`;
+        status.innerText = "Bağlantı hatası oluştu.";
+      }
+    }
+
+    async function deleteTenant() {
+      const status = document.getElementById("editTenantStatus");
+      const id = document.getElementById("editTenantId").value.trim();
+
+      if (!id) {
+        status.innerText = "Firma seçilemedi.";
+        return;
+      }
+
+      if (!confirm("Bu firmayı silmek istediğine emin misin? Firma tamamen silinir.")) return;
+
+      status.innerText = "Firma siliniyor...";
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/tenants?id=eq.${id}`, {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+
+        if (!res.ok) {
+          status.innerText = "Firma silinemedi.";
+          return;
+        }
+
+        status.innerText = "Firma başarıyla silindi.";
+        closeEditTenantModal();
+        await loadTenants();
+      } catch (error) {
+        status.innerText = "Bağlantı hatası oluştu.";
       }
     }
 
